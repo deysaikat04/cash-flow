@@ -1,0 +1,49 @@
+
+db.expenses.find();
+
+db.expenses.aggregate([
+    {
+        $match: {"months.transactions.transactionType": "Expense"}
+    },
+    {
+        $group: {
+            _id: "$months.transactions.category"
+        }
+    }
+])
+
+db.expenses.find(
+            {
+                $and: [
+                    { userId:'U100' },
+                    { year: 2020 },
+                    { 'months.monthName': "September" }
+                ]
+            }
+        );
+
+db.expenses.aggregate([
+    {$unwind: '$months' },
+    {$match: {
+        $and:[
+            {userId: 'U100'},
+            {'months.monthName': 'Julay'}
+        ]
+    }},
+    {$project: {'months.budget':1,_id:0}}
+])
+
+db.expenses.find(
+    {
+        $and: [
+            { userId: 'U100' },
+            { year: 2020 },
+            { 'months.monthName': 'July' }
+        ]
+    }
+)
+db.inventory.find()
+
+db.inventory.find( { 'instock.warehouse':'A'} )
+
+
