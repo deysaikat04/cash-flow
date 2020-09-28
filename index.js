@@ -1,4 +1,5 @@
-const app = require('express')();
+const express = require('express');
+const app = express();
 const connectDB = require('./config/db');
 const transaction = require('./routes/transaction');
 const user = require('./routes/userRoute');
