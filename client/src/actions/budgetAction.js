@@ -2,9 +2,17 @@ import axios from 'axios';
 
 const backEndUrl = 'http://localhost:5000/api/transactions';
 
-export function getBudget(userId, month) {
+export function getBudget(token, month) {
     return dispatch => {
-        axios.get(backEndUrl + '/getBudget/' + userId + '/' + month)
+        let url = `${backEndUrl}/getBudget/${month}`;
+        axios.get(url,
+            {
+                headers: {
+                    'authorization': token,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
             .then(res => {
                 dispatch(getBudgetAction(res.data));
             })
@@ -19,9 +27,18 @@ export function getBudget(userId, month) {
     }
 }
 
-export function addBudget(data) {
+export function addBudget(token, data) {
+
     return dispatch => {
-        axios.post(backEndUrl + '/setBudget', data)
+        let url = `${backEndUrl}/setBudget`;
+        axios.post(url, data,
+            {
+                headers: {
+                    'authorization': token,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
             .then(res => {
                 dispatch(setBudget(res.data));
             })

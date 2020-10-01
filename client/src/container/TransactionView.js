@@ -83,7 +83,7 @@ export default function TransactionView() {
             <AppBar position="static" className={classes.appbar}>
                 <Toolbar>
                     <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
-                        onClick={() => history.push('/')}
+                        onClick={() => history.push('/dashboard')}
                     >
                         <ArrowBackIcon />
                     </IconButton>

@@ -1,5 +1,5 @@
-import React, { Fragment, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { Fragment, useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Dashboard from './Dashboard';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import AddData from '../container/AddData';
@@ -9,6 +9,8 @@ import { ThemeProvider } from '@material-ui/core';
 import TransactionView from './TransactionView';
 import BudgetForm from './BudgetForm';
 import Login from './Login';
+
+import { savedUser } from '../actions/userAction';
 
 export const light = {
   palette: {
@@ -42,17 +44,17 @@ export const dark = {
 }
 
 function App() {
+  const storedTheme = sessionStorage.getItem('theme') === 'true';
+  const [theme, setTheme] = useState(storedTheme ? false : true);
+
+  const [isloggedIn, setIsLoggedIn] = useState(false);
+  const [token] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : '');
+  const dispatch = useDispatch();
 
   const { user } = useSelector(state => ({
     user: state.user
   }));
 
-
-
-  const storedTheme = sessionStorage.getItem('theme') === 'true';
-  const [theme, setTheme] = useState(storedTheme ? false : true);
-
-  const [isloggedIn, setIsLoggedIn] = useState(false);
 
   const month = ["January", "February", "March", "April", "May", "June", "July",
     "August", "September", "October", "November", "December"];
@@ -60,7 +62,6 @@ function App() {
   const appliedTheme = createMuiTheme(theme ? light : dark);
 
   const toggleTheme = (flag) => {
-    // console.log(flag);
     setTheme(flag);
     sessionStorage.setItem('theme', theme);
   };
@@ -74,7 +75,7 @@ function App() {
       <ThemeProvider theme={appliedTheme}>
         <Router>
           <Switch>
-            <Route exact path='/' render={() => user.isLoggedin ? <Redirect to='/dashboard' /> : <Redirect to='/login' />}
+            <Route exact path='/' render={() => user.isloggedIn ? <Redirect to='/dashboard' /> : <Redirect to='/login' />}
             />
 
             <Route exact path='/login' render={(props) => <Login

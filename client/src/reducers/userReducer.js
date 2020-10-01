@@ -2,18 +2,18 @@ const initState = {
     isLoggedin: false,
     id: '',
     name: '',
-    email: '',
     imageUrl: '',
-    googleId: ''
+    token: ''
 }
 
 export default function userReducer(state = initState, action) {
-
-    switch (action.type) {
+    const { type, payload } = action;
+    switch (type) {
         case 'SET_USER':
+            localStorage.setItem('token', payload.token);
             return {
                 ...state,
-                ...action.payload,
+                ...payload,
                 isLoggedin: true
             }
 
@@ -22,14 +22,14 @@ export default function userReducer(state = initState, action) {
                 ...state,
             }
         case 'LOGOUT_USER':
+            localStorage.clear();
             return {
                 ...state,
                 isLoggedin: false,
                 id: '',
                 name: '',
-                email: '',
                 imageUrl: '',
-                googleId: ''
+                token: ''
             }
 
         default:

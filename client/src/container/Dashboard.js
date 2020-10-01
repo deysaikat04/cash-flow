@@ -16,7 +16,7 @@ import Transactions from '../components/dashboard/Transactions';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { getAllTransactions, getMonthsTransactions } from '../actions/expenseAction';
 import { getBudget } from '../actions/budgetAction';
-import { getUser } from '../actions/userAction';
+import { savedUser } from '../actions/userAction';
 
 function Copyright() {
     return (
@@ -90,6 +90,8 @@ export default function Dashboard(props) {
     const dispatch = useDispatch();
 
     const [currentMonth] = useState(month[new Date().getMonth()]);
+    const [token, setToken] = useState('');
+
 
     const { expenses, budget, user } = useSelector(state => ({
         expenses: state.expenses,
@@ -97,23 +99,29 @@ export default function Dashboard(props) {
         user: state.user
     }));
 
+    // const expenses = useSelector(state => state.expenses);
+    // const budget = useSelector(state => state.budget);
+    // const user = useSelector(state => state.user);
+
+
+    const [loggedInUser, setUser] = useState(user);
 
     useEffect(() => {
-        let email = sessionStorage.getItem('email');
-        if (email) {
-            dispatch(getUser(email));
-            if (user.id) {
-                dispatch(getAllTransactions(user.id));
-                dispatch(getMonthsTransactions(user.id, month[new Date().getMonth()]));
-                dispatch(getBudget(user.id, currentMonth));
-            }
-        }
-    }, []);
-    // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+        // setTimeout(() => {
 
-    if (!user.isLoggedin) {
-        return <Redirect to="/login" />;
-    } else return (
+        // }, 1000)
+        setToken(localStorage.getItem('token'));
+        console.log("token ", token)
+        if (token) {
+            console.log("dash", token)
+            dispatch(getAllTransactions(token));
+            dispatch(getMonthsTransactions(token, month[new Date().getMonth()]));
+            dispatch(getBudget(token, currentMonth));
+        }
+    }, [token]);
+
+    // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+    return (
         <div className={classes.root}>
             <CssBaseline />
 
@@ -154,7 +162,7 @@ export default function Dashboard(props) {
                                         </Grid>
 
                                         <Grid item xs={12} md={12} lg={12}>
-                                            <PieChart transactions={expenses.monthlyItems} />
+                                            <PieChart transactions={expenses.items} />
                                         </Grid>
 
                                         <Grid item xs={12} md={12} lg={12}>

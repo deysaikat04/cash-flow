@@ -78,8 +78,9 @@ export default function Header(props) {
 
     const logout = (response) => {
         sessionStorage.clear();
+        localStorage.clear();
         dispatch(logOut());
-        history.push('/');
+        history.push('/login');
 
     }
     const handleLogoutFailure = (response) => {

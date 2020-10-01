@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Expense = require('../models/Expense');
+var jwt = require('jsonwebtoken');
+const config = require('config');
 const { toArray } = require('../utils/HelperFunctions');
 const { expenseExistByUser,
     getTransactionsByMonth,
@@ -11,9 +13,13 @@ const { expenseExistByUser,
     updateBudget,
     getBudgetByMonth
 } = require('../utils/DbFunctions');
+const auth = require('../middleware/auth');
 
-router.get('/monthly/:userId/:month', async (req, res) => {
-    const { userId, month } = req.params;
+
+
+router.get('/monthly/:month', auth, async (req, res) => {
+    const { month } = req.params;
+    const userId = req.user.id;
     try {
         let userExists = await expenseExistByUser(userId);
         if (!userExists) {
@@ -28,9 +34,10 @@ router.get('/monthly/:userId/:month', async (req, res) => {
 });
 
 // create or update entry
-router.post('/add', async (req, res) => {
+router.post('/add', auth, async (req, res) => {
 
-    const { userId, monthName } = req.body;
+    const { monthName } = req.body;
+    const userId = req.user.id;
 
     const transactions = {
         transactionType: req.body.transactionType,
@@ -100,8 +107,8 @@ router.post('/add', async (req, res) => {
 
 
 //get expense details by user
-router.get('/all/:userId', async (req, res) => {
-    const userId = req.params.userId;
+router.get('/all', auth, async (req, res) => {
+    const userId = req.user.id;
 
     try {
         //check if user exists
@@ -138,8 +145,9 @@ router.get('/all/:userId', async (req, res) => {
 });
 
 //get expense details of a user based on month
-router.get('/totalByMonth/:userId/:month', async (req, res) => {
-    const { userId, month } = req.params;
+router.get('/totalByMonth/:month', auth, async (req, res) => {
+    const { month } = req.params;
+    const userId = req.user.id;
 
     try {
         //check if user exists
@@ -167,9 +175,9 @@ router.get('/totalByMonth/:userId/:month', async (req, res) => {
 });
 
 //update budget
-router.post('/setBudget', async (req, res) => {
-    const { userId, month, amount } = req.body;
-
+router.post('/setBudget', auth, async (req, res) => {
+    const { month, amount } = req.body;
+    const userId = req.user.id;
     try {
         //check if user exists
         let monthExists = await monthExistsByUser(userId, month);
@@ -194,9 +202,9 @@ router.post('/setBudget', async (req, res) => {
 
 });
 
-router.get('/getBudget/:userId/:month', async (req, res) => {
-    const { userId, month } = req.params;
-
+router.get('/getBudget/:month', auth, async (req, res) => {
+    const { month } = req.params;
+    const userId = req.user.id;
     try {
         //check if user exists
         let monthExists = await getBudgetByMonth(userId, month);

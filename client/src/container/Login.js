@@ -9,7 +9,9 @@ import { GoogleLogin } from 'react-google-login';
 import Box from '@material-ui/core/Box';
 import Carousel from 'react-material-ui-carousel';
 
-import { setLogginUser } from '../actions/userAction';
+import Cookies from 'js-cookie'
+
+import { registerUser } from '../actions/userAction';
 
 function Copyright() {
     return (
@@ -85,7 +87,6 @@ export default function Login(props) {
     const responseGoogle = (response) => {
 
         if (response) {
-
             let userObj = {
                 email: response.profileObj.email,
                 name: response.profileObj.name,
@@ -93,9 +94,7 @@ export default function Login(props) {
                 googleId: response.profileObj.googleId
             };
 
-            sessionStorage.setItem('isLoggedIn', true);
-            sessionStorage.setItem('email', response.profileObj.email);
-            dispatch(setLogginUser(userObj));
+            dispatch(registerUser(userObj));
             history.push('/dashboard')
         }
     }
@@ -144,7 +143,7 @@ export default function Login(props) {
                                 }
                                 onSuccess={responseGoogle}
                                 onFailure={responseGoogle}
-                                isSignedIn={true}
+                                // isSignedIn={true}
                                 cookiePolicy={'single_host_origin'}
                             />
                         </Grid>

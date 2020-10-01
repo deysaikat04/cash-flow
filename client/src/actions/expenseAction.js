@@ -2,9 +2,17 @@ import axios from 'axios';
 
 const backEndUrl = 'http://localhost:5000/api/transactions';
 
-export function getMonthsTransactions(userId, month) {
+export function getMonthsTransactions(token, month) {
     return dispatch => {
-        axios.get(backEndUrl + `/monthly/${userId}/${month}`)
+        let url = `${backEndUrl}/monthly/${month}`;
+        axios.get(url,
+            {
+                headers: {
+                    'authorization': token,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
             .then(res => {
                 dispatch(monthExpenses(res.data));
             })
@@ -18,9 +26,18 @@ export function getMonthsTransactions(userId, month) {
     }
 }
 
-export function getAllTransactions(userId) {
+export function getAllTransactions(token) {
+
     return dispatch => {
-        axios.get(backEndUrl + `/all/${userId}`)
+        let url = `${backEndUrl}/all`;
+        axios.get(url,
+            {
+                headers: {
+                    'authorization': token,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
             .then(res => {
                 dispatch(allExpenses(res.data));
             })

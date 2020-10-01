@@ -147,7 +147,7 @@ export default function BudgetForm(props) {
                 }}>
                 <Toolbar>
                     <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
-                        onClick={() => history.push('/')}
+                        onClick={() => history.push('/dashboard')}
                     >
                         <ArrowBackIcon />
                     </IconButton>

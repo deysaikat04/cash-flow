@@ -2,9 +2,9 @@ import axios from 'axios';
 
 const backEndUrl = 'http://localhost:5000/api/auth';
 
-export const setLogginUser = (data) => {
+export const registerUser = (data) => {
     return dispatch => {
-        axios.post(backEndUrl + '/login', data)
+        axios.post(backEndUrl + '/register', data)
             .then(res => {
                 dispatch(logIn(res.data));
             })
@@ -15,9 +15,9 @@ export const setLogginUser = (data) => {
     }
 }
 
-export const getUser = (data) => {
+export const savedUser = (data) => {
     return dispatch => {
-        axios.get(backEndUrl + '/user/' + data)
+        axios.post(backEndUrl + '/getUser', data)
             .then(res => {
                 dispatch(logIn(res.data));
             })
