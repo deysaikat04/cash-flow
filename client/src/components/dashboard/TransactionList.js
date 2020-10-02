@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TransactionList(props) {
     const classes = useStyles();
-    const { transactionType, amount, description, category, transactionMode, createdAt } = props;
+    const { transactionType, amount, category, transactionMode, createdAt } = props;
 
 
 

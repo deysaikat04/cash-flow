@@ -28,7 +28,7 @@ app.use('/api/auth', user);
 //     res.status(404).json({ error: { message: 'Invalid route!' } });
 // })
 
-Serve static assets in production
+//Serve static assets in production
 app.use(function (req, res) {
     res.sendFile(path.join(__dirname, './client/build/index.html'));
 });

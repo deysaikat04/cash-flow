@@ -80,7 +80,7 @@ function App() {
       <ThemeProvider theme={appliedTheme}>
         <Router>
           <Switch>
-            <Route exact path='/' render={() => user.isloggedIn ? <Redirect to='/dashboard' /> : <Redirect to='/login' />}
+            <Route exact path='/' render={() => isloggedIn ? <Redirect to='/dashboard' /> : <Redirect to='/login' />}
             />
 
             <Route exact path='/login' render={(props) => <Login
@@ -89,7 +89,7 @@ function App() {
               checkIfLoggedIn={checkIfLoggedIn}
             />} />
             <Route exact path='/dashboard' render={(props) => <Dashboard {...props}
-              theme={theme} month={month} isLoggedin={user.isLoggedin} />} />
+              theme={theme} month={month} isloggedIn={isloggedIn} />} />
 
             <Route exact path='/add' render={(props) => <AddData
               {...props}
@@ -111,7 +111,7 @@ function App() {
 
 
           </Switch>
-          <BottomNavigation toggleTheme={toggleTheme} isLoggedin={user.isLoggedin} />
+          <BottomNavigation toggleTheme={toggleTheme} isloggedIn={isloggedIn} />
         </Router>
       </ThemeProvider>
     </Fragment>

@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -16,7 +16,7 @@ import Transactions from '../components/dashboard/Transactions';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { getAllTransactions, getMonthsTransactions } from '../actions/expenseAction';
 import { getBudget } from '../actions/budgetAction';
-import { savedUser } from '../actions/userAction';
+
 
 function Copyright() {
     return (
@@ -86,8 +86,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard(props) {
     const classes = useStyles();
-    const { theme, month } = props;
+    const { theme, month, isloggedIn } = props;
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const [currentMonth] = useState(month[new Date().getMonth()]);
     const [token, setToken] = useState('');
@@ -98,7 +99,6 @@ export default function Dashboard(props) {
         budget: state.budget,
         user: state.user
     }));
-    const [loggedin, setLoggedin] = useState();
 
     useEffect(() => {
         setTimeout(() => {
@@ -111,17 +111,16 @@ export default function Dashboard(props) {
         }
     }, [token]);
 
-    useEffect(() => {
-        if (user.isLoggedin) {
-            setLoggedin(user.isLoggedin)
-        }
-    }, [user]);
 
-    // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-
+    if (!isloggedIn) {
+        return <Redirect to='/login' />
+    } else {
+        window.history.pushState(null, document.title, window.location.href);
+    }
 
     return (
         <div className={classes.root}>
+
             <CssBaseline />
 
             <main className={classes.content}>

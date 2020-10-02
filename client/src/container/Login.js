@@ -9,7 +9,6 @@ import { GoogleLogin } from 'react-google-login';
 import Box from '@material-ui/core/Box';
 import Carousel from 'react-material-ui-carousel';
 
-import Cookies from 'js-cookie'
 
 import { registerUser } from '../actions/userAction';
 
@@ -93,7 +92,7 @@ export default function Login(props) {
                 imageUrl: response.profileObj.imageUrl,
                 googleId: response.profileObj.googleId
             };
-
+            props.checkIfLoggedIn(true);
             dispatch(registerUser(userObj));
             history.push('/dashboard')
         }

@@ -59,6 +59,7 @@ export default function PieChart(props) {
             labels.splice(i, 1);
             data.splice(i, 1);
         }
+        return null;
     }
     useEffect(() => {
         if (expenses) {
@@ -108,21 +109,7 @@ export default function PieChart(props) {
     const month = ["January", "February", "March", "April", "May", "June", "July",
         "August", "September", "October", "November", "December"];
 
-    var dataDoughnut = {
-        labels: labels,
-        datasets: [
-            {
-                data: data,
-                backgroundColor: ["#4073f4", "#01f6bf", "#5336df", "#ff8151"],
-                hoverBackgroundColor: [
-                    "#2660f9",
-                    "#05d8ae",
-                    "#4021d2",
-                    "#f9723d"
-                ]
-            }
-        ]
-    };
+
 
     const chart = () => {
         return (

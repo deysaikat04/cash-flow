@@ -105,6 +105,7 @@ export default function SummaryCard(props) {
         setExpenses(expense);
         setIncome(income);
         setBalance(income - expenses);
+        return null;
     }
 
     useEffect(() => {

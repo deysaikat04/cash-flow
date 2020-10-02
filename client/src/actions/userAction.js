@@ -16,7 +16,6 @@ export const registerUser = (data) => {
 }
 
 export const savedUser = (token) => {
-    console.log(token)
     return dispatch => {
         axios.get(backEndUrl + '/getUser',
             {
