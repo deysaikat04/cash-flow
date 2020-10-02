@@ -217,7 +217,7 @@ export default function AddData(props) {
                 userId: user.id
             }
             // console.log(data);
-            dispatch(addTransactions(data));
+            dispatch(addTransactions(localStorage.getItem('token'), data));
 
             setFormMsg({
                 ...formMsg,

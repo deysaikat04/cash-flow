@@ -137,10 +137,7 @@ export default function Navigation(props) {
         </div>
     );
 
-    if (!isLoggedin) {
-        return null;
-
-    } else return (
+    return (
         isLoggedin ? (
             <div>
                 <AppBar position="fixed" className={classes.appBar}>

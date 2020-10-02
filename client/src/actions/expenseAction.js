@@ -51,10 +51,18 @@ export function getAllTransactions(token) {
     }
 }
 
-export function addTransactions(data) {
+export function addTransactions(token, data) {
 
     return dispatch => {
-        axios.post(backEndUrl + '/add', data)
+        let url = `${backEndUrl}/add`;
+        axios.post(url, data,
+            {
+                headers: {
+                    'authorization': token,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
             .then(res => {
                 dispatch(setExpenses(res.data));
             })

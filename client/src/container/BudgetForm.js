@@ -116,8 +116,7 @@ export default function BudgetForm(props) {
                 month: month[new Date().getMonth()],
                 year: new Date().getFullYear(),
             }
-            console.log(data);
-            dispatch(addBudget(data));
+            dispatch(addBudget(localStorage.getItem('token'), data));
             handleAlert();
             reset();
         }

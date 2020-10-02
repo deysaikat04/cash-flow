@@ -4,6 +4,7 @@ const connectDB = require('./config/db');
 const transaction = require('./routes/transaction');
 const user = require('./routes/userRoute');
 const path = require('path');
+const expressSanitizer = require('express-sanitizer');
 
 var bodyParser = require('body-parser');
 var cors = require('cors');
@@ -11,6 +12,7 @@ var cors = require('cors');
 app.use(cors());
 
 app.use(bodyParser.json());
+app.use(expressSanitizer());
 
 connectDB();
 

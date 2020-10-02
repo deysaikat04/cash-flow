@@ -7,7 +7,13 @@ db.expenses.aggregate([
     },
     {
         $group: {
-            _id: "$months.transactions.category"
+            // _id: "$months.transactions.category"
+            _id: "$months.monthName"
+        }
+    },
+    {
+        "$project": {
+_id: 0, months: 1
         }
     }
 ])
@@ -26,24 +32,21 @@ db.expenses.aggregate([
     {$unwind: '$months' },
     {$match: {
         $and:[
-            {userId: 'U100'},
-            {'months.monthName': 'Julay'}
+            {userId: '5f718feff88c9a140421acb1'}
         ]
     }},
-    {$project: {'months.budget':1,_id:0}}
+    {$project: {'months':1,_id:0}}
 ])
 
 db.expenses.find(
     {
         $and: [
-            { userId: 'U100' },
-            { year: 2020 },
-            { 'months.monthName': 'July' }
+            { userId: '5f718feff88c9a140421acb1' },
+            { year: 2020 }
         ]
     }
 )
 db.inventory.find()
 
-db.inventory.find( { 'instock.warehouse':'A'} )
 
 

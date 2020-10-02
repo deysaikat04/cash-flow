@@ -3,14 +3,13 @@ const config = require('config');
 
 module.exports = function (req, res, next) {
     // Get token from header
-    const token = req.header('authorization');
-
+    const token = req.sanitize(req.header('authorization'));
     // Check if not token
     if (!token) {
         return res.status(401).json({ error: { message: 'No token, authorization denied' } });
     }
 
-    // Verify token
+    // Verify token 
     try {
         jwt.verify(token, config.get('jwtSecret'), (error, decoded) => {
             if (error) {

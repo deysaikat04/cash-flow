@@ -48,13 +48,18 @@ function App() {
   const [theme, setTheme] = useState(storedTheme ? false : true);
 
   const [isloggedIn, setIsLoggedIn] = useState(false);
-  const [token] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : '');
+  const [token] = useState(localStorage.getItem('token'));
   const dispatch = useDispatch();
 
   const { user } = useSelector(state => ({
     user: state.user
   }));
 
+  useEffect(() => {
+    if (token && token != 'undefined') {
+      dispatch(savedUser(token));
+    }
+  }, [token]);
 
   const month = ["January", "February", "March", "April", "May", "June", "July",
     "August", "September", "October", "November", "December"];
@@ -83,14 +88,18 @@ function App() {
               theme={theme}
               checkIfLoggedIn={checkIfLoggedIn}
             />} />
-            <Route exact path='/dashboard' render={(props) => <Dashboard {...props} theme={theme} month={month} />} />
+            <Route exact path='/dashboard' render={(props) => <Dashboard {...props}
+              theme={theme} month={month} isLoggedin={user.isLoggedin} />} />
+
             <Route exact path='/add' render={(props) => <AddData
               {...props}
               theme={theme}
               month={month}
               isLoggedin={user.isLoggedin} />
             } />
+
             <Route exact path='/transactions' component={TransactionView} isLoggedin={user.isLoggedin} />
+
             <Route exact path='/budget'
               render={() =>
                 <BudgetForm

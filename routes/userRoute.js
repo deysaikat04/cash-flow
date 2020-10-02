@@ -3,9 +3,10 @@ const router = express.Router();
 const User = require('../models/User');
 var jwt = require('jsonwebtoken');
 const config = require('config');
+const auth = require('../middleware/auth');
 
 router.post('/register', async (req, res) => {
-    const { name, email, googleId, imageUrl } = req.body;
+    const { name, email, googleId, imageUrl } = (req.body);
 
     let user = await User.findOne({ email });
 
@@ -18,7 +19,7 @@ router.post('/register', async (req, res) => {
         jwt.sign(
             payload,
             config.get('jwtSecret'),
-            { expiresIn: '5 days' },
+            { expiresIn: '7 days' },
             (err, token) => {
                 if (err) throw err;
                 res.json({
@@ -49,7 +50,7 @@ router.post('/register', async (req, res) => {
         jwt.sign(
             payload,
             config.get('jwtSecret'),
-            { expiresIn: '5 days' },
+            { expiresIn: '7 days' },
             (err, token) => {
                 if (err) throw err;
                 res.json({
@@ -65,18 +66,16 @@ router.post('/register', async (req, res) => {
 });
 
 
-router.post('/getUser', async (req, res) => {
+router.get('/getUser', auth, async (req, res) => {
 
-    const { token } = req.body;
+    const userId = req.user.id;
 
     try {
-        var decoded = jwt.verify(token, config.get('jwtSecret'));
-        const userId = decoded.user.id;
+
         let user = await User.findById(userId);
 
         if (user) {
             return res.json({
-                token,
                 id: user.id,
                 name: user.name,
                 imageUrl: user.imageUrl

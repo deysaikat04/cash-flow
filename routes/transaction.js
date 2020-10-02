@@ -134,7 +134,7 @@ router.get('/all', auth, async (req, res) => {
                 })
             })
 
-            res.json(allTransactionsArray);
+            res.json(allTransactionsArray.reverse());
         }
 
     } catch (error) {
@@ -224,6 +224,35 @@ router.get('/getBudget/:month', auth, async (req, res) => {
         console.error(error.message);
         res.status(500).send('Server Error');
     }
+})
+
+router.get('/grouped', auth, async (req, res) => {
+
+    let userId = req.user.id;
+
+    let data = await Expense.aggregate([
+        { $unwind: '$months' },
+        {
+            $match: {
+                $and: [
+                    { year: new Date().getFullYear() },
+                    { userId }
+                ]
+            }
+        },
+        { $project: { 'months.monthName': 1, 'months.transactions': 1, _id: 0 } }
+    ]);
+
+    let value = [];
+
+    data.map(item => {
+        let monthObj = {};
+        var { monthName, transactions } = item.months;
+        console.log(monthName, transactions);
+        monthObj[monthName] = transactions;
+        value.push(monthObj);
+    })
+    res.json(value.reverse())
 })
 
 module.exports = router;

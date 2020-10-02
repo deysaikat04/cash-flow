@@ -98,29 +98,28 @@ export default function Dashboard(props) {
         budget: state.budget,
         user: state.user
     }));
-
-    // const expenses = useSelector(state => state.expenses);
-    // const budget = useSelector(state => state.budget);
-    // const user = useSelector(state => state.user);
-
-
-    const [loggedInUser, setUser] = useState(user);
+    const [loggedin, setLoggedin] = useState();
 
     useEffect(() => {
-        // setTimeout(() => {
-
-        // }, 1000)
-        setToken(localStorage.getItem('token'));
-        console.log("token ", token)
+        setTimeout(() => {
+            setToken(localStorage.getItem('token'));
+        }, 500);
         if (token) {
-            console.log("dash", token)
             dispatch(getAllTransactions(token));
             dispatch(getMonthsTransactions(token, month[new Date().getMonth()]));
             dispatch(getBudget(token, currentMonth));
         }
     }, [token]);
 
+    useEffect(() => {
+        if (user.isLoggedin) {
+            setLoggedin(user.isLoggedin)
+        }
+    }, [user]);
+
     // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -143,7 +142,7 @@ export default function Dashboard(props) {
                                             }}
                                         >
                                             <Grid container>
-                                                <SummaryCard theme={theme} data={expenses.items} />
+                                                <SummaryCard theme={theme} data={expenses.monthlyItems} />
                                             </Grid>
                                         </Grid>
 
@@ -162,7 +161,7 @@ export default function Dashboard(props) {
                                         </Grid>
 
                                         <Grid item xs={12} md={12} lg={12}>
-                                            <PieChart transactions={expenses.items} />
+                                            <PieChart transactions={expenses.monthlyItems} />
                                         </Grid>
 
                                         <Grid item xs={12} md={12} lg={12}>
@@ -214,4 +213,5 @@ export default function Dashboard(props) {
 
         </div>
     );
+
 }

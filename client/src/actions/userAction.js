@@ -15,9 +15,17 @@ export const registerUser = (data) => {
     }
 }
 
-export const savedUser = (data) => {
+export const savedUser = (token) => {
+    console.log(token)
     return dispatch => {
-        axios.post(backEndUrl + '/getUser', data)
+        axios.get(backEndUrl + '/getUser',
+            {
+                headers: {
+                    'authorization': token,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
             .then(res => {
                 dispatch(logIn(res.data));
             })
