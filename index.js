@@ -16,7 +16,7 @@ app.use(expressSanitizer());
 
 connectDB();
 
-// app.use(express.static('client/build'));
+app.use(express.static('client/build'));
 
 app.get('/favicon.ico', (req, res) => res.status(204));
 
@@ -28,10 +28,10 @@ app.use('/api/auth', user);
 //     res.status(404).json({ error: { message: 'Invalid route!' } });
 // })
 
-// Serve static assets in production
-// app.use(function (req, res) {
-//     res.sendFile(path.join(__dirname, './client/build/index.html'));
-// });
+Serve static assets in production
+app.use(function (req, res) {
+    res.sendFile(path.join(__dirname, './client/build/index.html'));
+});
 
 
 const PORT = process.env.PORT || 5000;
