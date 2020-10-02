@@ -86,7 +86,7 @@ export default function Login(props) {
     const responseGoogle = (response) => {
 
         if (response) {
-            console.log(response);
+           alert(response);
             
             let userObj = {
                 email: response.profileObj.email,
