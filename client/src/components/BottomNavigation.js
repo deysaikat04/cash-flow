@@ -64,7 +64,7 @@ export default function Navigation(props) {
     const classes = useStyles();
     const history = useHistory();
 
-    const { isloggedIn } = props;
+    const { isLoggedin } = props;
 
     const storedTheme = sessionStorage.getItem('theme') === 'true';
     const [open, setOpen] = React.useState(false);
@@ -138,8 +138,8 @@ export default function Navigation(props) {
     );
 
     return (
-        isloggedIn && history.location.pathname !== '/login' ? (
-            < div >
+        isLoggedin ? (
+            <div>
                 <AppBar position="fixed" className={classes.appBar}>
                     <Toolbar>
                         <IconButton edge="start" aria-label="open drawer"
@@ -167,7 +167,7 @@ export default function Navigation(props) {
                     {list()}
                 </SwipeableDrawer>
 
-            </div >
+            </div>
         ) : null
     )
 }

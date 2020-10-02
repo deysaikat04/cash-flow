@@ -111,7 +111,7 @@ function App() {
 
 
           </Switch>
-          <BottomNavigation toggleTheme={toggleTheme} isloggedIn={isloggedIn} />
+          <BottomNavigation toggleTheme={toggleTheme} isloggedIn={user.isLoggedin} />
         </Router>
       </ThemeProvider>
     </Fragment>
