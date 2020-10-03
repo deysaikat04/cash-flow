@@ -25,8 +25,12 @@ router.get('/monthly/:month', auth, async (req, res) => {
         if (!userExists) {
             res.status(400).json({ error: { message: 'User not found!' } });
         } else {
-            var TransactionArr = await getTransactionsByMonth(userId, month);
-            res.json(TransactionArr);
+            try {
+                var TransactionArr = await getTransactionsByMonth(userId, month);
+                res.json(TransactionArr);
+            } catch (error) {
+                res.json([]);
+            }
         }
     } catch (error) {
         res.status(500).send('Server Error');

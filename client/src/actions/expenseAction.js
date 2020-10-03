@@ -66,9 +66,14 @@ export function addTransactions(token, data) {
             .then(res => {
                 dispatch(setExpenses(res.data));
             })
-            .catch(err => {
-                console.log(err);
-                dispatch(expensesError(err.response.data.message));
+            .catch((error) => {
+                if (error.response) {
+                    dispatch(expensesError(error.response.data.message))
+
+                } else {
+
+                    dispatch(expensesError(error.message))
+                }
             })
     }
 }
