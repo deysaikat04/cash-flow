@@ -8,9 +8,14 @@ export const registerUser = (data) => {
             .then(res => {
                 dispatch(logIn(res.data));
             })
-            .catch(err => {
-                console.log(err);
-                dispatch(authError(err.response.data.message));
+            .catch((error) => {
+                if (error.response) {
+                    dispatch(authError(error.response.data.message))
+
+                } else {
+
+                    dispatch(authError(error.message))
+                }
             })
     }
 }
@@ -28,9 +33,14 @@ export const savedUser = (token) => {
             .then(res => {
                 dispatch(logIn(res.data));
             })
-            .catch(err => {
-                console.log(err);
-                dispatch(authError(err.response.data.message));
+            .catch((error) => {
+                if (error.response) {
+                    dispatch(authError(error.response.data.message))
+
+                } else {
+
+                    dispatch(authError(error.message))
+                }
             })
     }
 }

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -8,9 +8,14 @@ import Typography from '@material-ui/core/Typography';
 import { GoogleLogin } from 'react-google-login';
 import Box from '@material-ui/core/Box';
 import Carousel from 'react-material-ui-carousel';
-
-
 import { registerUser } from '../actions/userAction';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 function Copyright() {
     return (
@@ -81,32 +86,51 @@ export default function Login(props) {
 
     const dispatch = useDispatch();
 
+    const user = useSelector(state => state.user);
 
+    const [error, setError] = useState('');
+    const [alert, setAlert] = useState(false);
+
+    const handleAlert = () => {
+        setAlert(true);
+    };
+
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setAlert(false);
+    };
 
     const responseGoogle = (response) => {
 
         if (response) {
-
-            alert(response.profileObj.email)
-
             let userObj = {
                 email: response.profileObj.email,
                 name: response.profileObj.name,
                 imageUrl: response.profileObj.imageUrl,
                 googleId: response.profileObj.googleId
             };
-            props.checkIfLoggedIn(true);
             dispatch(registerUser(userObj));
-            history.push('/dashboard')
         }
     }
+
+    useEffect(() => {
+        if (user.error) {
+            setError(user.error);
+            handleAlert();
+        }
+        if (user.isLoggedin) {
+            props.checkIfLoggedIn(true);
+            history.push('/dashboard');
+        }
+    }, [user]);
 
 
     return (
         <div className={classes.root}>
             <CssBaseline />
             <main className={classes.content}>
-
 
                 <Grid item xs={12} md={12} lg={12}>
                     <Grid container>
@@ -155,6 +179,23 @@ export default function Login(props) {
                         </Typography>
 
                         </Grid>
+
+                        {
+                            error ? (
+                                <Grid item xs={12} sm={12} md={12} lg={12} className={classes.imgCenter}
+                                    style={{ marginBottom: '32px' }}>
+
+                                    <Snackbar open={alert} autoHideDuration={3000} onClose={handleAlertClose}>
+                                        <Alert onClose={handleAlertClose} severity='error'>
+                                            {error}
+                                        </Alert>
+                                    </Snackbar>
+
+                                </Grid>
+                            ) : <></>
+                        }
+
+
 
                     </Grid>
                     <Box pt={4} className={classes.footer}>
