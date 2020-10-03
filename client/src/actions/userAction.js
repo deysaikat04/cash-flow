@@ -3,6 +3,7 @@ import axios from 'axios';
 const backEndUrl = 'http://localhost:5000/api/auth';
 
 export const registerUser = (data) => {
+    alert(data);
     return dispatch => {
         axios.post(backEndUrl + '/register', data)
             .then(res => {
