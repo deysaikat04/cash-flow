@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-const backEndUrl = 'http://localhost:5000/api/transactions';
 
 export function getMonthsTransactions(token, month) {
     return dispatch => {
-        let url = `${backEndUrl}/monthly/${month}`;
+        let url = `/api/transactions/monthly/${month}`;
         axios.get(url,
             {
                 headers: {
@@ -29,7 +28,7 @@ export function getMonthsTransactions(token, month) {
 export function getAllTransactions(token) {
 
     return dispatch => {
-        let url = `${backEndUrl}/all`;
+        let url = `/api/transactions/all`;
         axios.get(url,
             {
                 headers: {
@@ -54,7 +53,7 @@ export function getAllTransactions(token) {
 export function addTransactions(token, data) {
 
     return dispatch => {
-        let url = `${backEndUrl}/add`;
+        let url = `/api/transactions/add`;
         axios.post(url, data,
             {
                 headers: {

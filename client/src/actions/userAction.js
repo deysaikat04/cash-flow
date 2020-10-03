@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-const backEndUrl = 'http://localhost:5000/api/auth';
 
 export const registerUser = (data) => {
     return dispatch => {
-        axios.post(backEndUrl + '/register', data)
+        axios.post('/api/auth/register', data)
             .then(res => {
                 dispatch(logIn(res.data));
             })
@@ -22,7 +21,7 @@ export const registerUser = (data) => {
 
 export const savedUser = (token) => {
     return dispatch => {
-        axios.get(backEndUrl + '/getUser',
+        axios.get('/api/getUser',
             {
                 headers: {
                     'authorization': token,

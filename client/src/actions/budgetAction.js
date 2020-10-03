@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-const backEndUrl = 'http://localhost:5000/api/transactions';
 
 export function getBudget(token, month) {
     return dispatch => {
-        let url = `${backEndUrl}/getBudget/${month}`;
+        let url = `/api/transactions/getBudget/${month}`;
         axios.get(url,
             {
                 headers: {
@@ -30,7 +29,7 @@ export function getBudget(token, month) {
 export function addBudget(token, data) {
 
     return dispatch => {
-        let url = `${backEndUrl}/setBudget`;
+        let url = `/api/transactions/setBudget`;
         axios.post(url, data,
             {
                 headers: {
