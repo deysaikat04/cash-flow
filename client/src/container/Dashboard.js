@@ -104,14 +104,7 @@ export default function Dashboard(props) {
         setTimeout(() => {
             setToken(localStorage.getItem('token'));
         }, 500);
-        if (token) {
-            if (window.performance) {
-                if (performance.navigation.type == 1) {
-                    console.log("This page is reloaded");
-                } else {
-                    console.log("This page is not reloaded");
-                }
-            }
+        if (token) {            
             dispatch(getAllTransactions(token));
             dispatch(getMonthsTransactions(token, month[new Date().getMonth()]));
             dispatch(getBudget(token, currentMonth));
