@@ -104,7 +104,7 @@ export default function Dashboard(props) {
         setTimeout(() => {
             setToken(localStorage.getItem('token'));
         }, 500);
-        if (token) {
+        if (token) {           
             dispatch(getAllTransactions(token));
             dispatch(getMonthsTransactions(token, month[new Date().getMonth()]));
             dispatch(getBudget(token, currentMonth));
