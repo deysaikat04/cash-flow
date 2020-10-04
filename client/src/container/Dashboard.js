@@ -105,13 +105,6 @@ export default function Dashboard(props) {
             setToken(localStorage.getItem('token'));
         }, 500);
         if (token) {
-            if (window.performance) {
-                if (performance.navigation.type == 1) {
-                    console.log("This page is reloaded");
-                } else {
-                    console.log("This page is not reloaded");
-                }
-            }
             dispatch(getAllTransactions(token));
             dispatch(getMonthsTransactions(token, month[new Date().getMonth()]));
             dispatch(getBudget(token, currentMonth));
