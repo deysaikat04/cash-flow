@@ -105,7 +105,6 @@ export default function Login(props) {
         setAlert(false);
     };
 
-<<<<<<< HEAD
     const onPinChange = (value, index) => {
         setPin(value);
     };
@@ -113,17 +112,6 @@ export default function Login(props) {
     const save = (value) => {
         let data = {
             pin: value
-=======
-    const responseGoogle = (response) => {
-        if (response) {
-            let userObj = {
-                email: response.profileObj.email,
-                name: response.profileObj.name,
-                imageUrl: response.profileObj.imageUrl,
-                googleId: response.profileObj.googleId
-            };
-            dispatch(registerUser(userObj));
->>>>>>> 5846b54fb6baf3ea6da7bd2da72b7e93ab98e6ae
         }
         dispatch(registerUser(data));
     }
@@ -175,7 +163,6 @@ export default function Login(props) {
 
                         <Grid item xs={12} sm={12} md={12} lg={12} className={classes.imgCenter}>
 
-<<<<<<< HEAD
                             <PinInput
                                 length={4}
                                 focus
@@ -189,15 +176,6 @@ export default function Login(props) {
                                 type="numeric"
                                 onChange={(value) => { onPinChange(value) }}
                                 onComplete={(value) => { save(value) }}
-=======
-                                buttonText={
-                                    <Typography variant="button">Sign In </Typography>
-                                }
-                                onSuccess={responseGoogle}
-                                onFailure={responseGoogle}
-                                // isSignedIn={true}
-//                                 cookiePolicy={'single_host_origin'}
->>>>>>> 5846b54fb6baf3ea6da7bd2da72b7e93ab98e6ae
                             />
                         </Grid>
 
