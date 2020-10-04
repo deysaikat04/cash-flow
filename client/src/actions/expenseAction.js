@@ -51,7 +51,6 @@ export function getAllTransactions(token) {
 }
 
 export function addTransactions(token, data) {
-
     return dispatch => {
         let url = `/api/transactions/add`;
         axios.post(url, data,

@@ -23,7 +23,7 @@ router.get('/monthly/:month', auth, async (req, res) => {
     try {
         let userExists = await expenseExistByUser(userId);
         if (!userExists) {
-            res.status(400).json({ error: { message: 'User not found!' } });
+            res.json([]);
         } else {
             try {
                 var TransactionArr = await getTransactionsByMonth(userId, month);
@@ -40,27 +40,26 @@ router.get('/monthly/:month', auth, async (req, res) => {
 // create or update entry
 router.post('/add', auth, async (req, res) => {
 
-    const { monthName } = req.body;
+    const { transactionType, amount, description, category, transactionMode, createdAt, monthName, yearName } = req.body;
     const userId = req.user.id;
 
     const transactions = {
-        transactionType: req.body.transactionType,
-        amount: req.body.amount,
-        description: req.body.description,
-        category: req.body.category,
-        transactionMode: req.body.transactionMode,
-        createdAt: req.body.createdAt
-
+        transactionType,
+        amount,
+        description,
+        category,
+        transactionMode,
+        createdAt
     };
 
     const month = {
-        monthName: req.body.monthName,
+        monthName,
         transactions: transactions
     };
 
     const expense = new Expense({
-        userId: req.body.userId,
-        year: req.body.yearName,
+        userId,
+        year: yearName,
         months: month
     });
 
@@ -80,7 +79,7 @@ router.post('/add', auth, async (req, res) => {
                     var TransactionArr = await getTransactionsByMonth(userId, monthName);
                     res.json(TransactionArr);
                 } else {
-                    res.status(500).send('Server Error');
+                    res.status(500).send('Server Error1');
                 }
 
             } else {
@@ -92,7 +91,7 @@ router.post('/add', auth, async (req, res) => {
                     let data = toArray(allTransactions);
                     res.json(data);
                 } else {
-                    res.status(500).send('Server Error');
+                    res.status(500).send('Server Error2');
                 }
 
             }
@@ -125,7 +124,7 @@ router.get('/all', auth, async (req, res) => {
             }
         );
         if (!userExists) {
-            res.status(400).json({ error: { message: 'User not found!' } });
+            res.json([]);
         } else {
 
             let transactions = await getAllTransactionByUser(userId);

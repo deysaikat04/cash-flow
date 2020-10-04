@@ -10,7 +10,6 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import { GoogleLogout } from 'react-google-login';
 import { logOut } from '../../actions/userAction';
 
 const useStyles = makeStyles((theme) => ({
@@ -34,6 +33,10 @@ const useStyles = makeStyles((theme) => ({
     avatar: {
         textAlign: 'right',
         cursor: 'pointer'
+    },
+    avatarImg: {
+        width: '85%',
+        height: '100%',
     }
 }));
 
@@ -104,13 +107,13 @@ export default function Header(props) {
                             <Grid container spacing={3}>
                                 <Grid item xs={10} sm={10} md={10} lg={10} className={classes.leftAlign}>
                                     <Typography variant='caption'>
-                                        Welcome {user.name}
+                                        {greeting}
                                     </Typography>
                                 </Grid>
 
                                 <Grid item xs={2} sm={2} md={2} lg={2} className={classes.avatar}
                                     onClick={handleClickOpen}>
-                                    <Avatar alt={user.name} src={user.imageUrl} />
+                                    <Avatar alt="user" src='./img/user.svg' className={classes.avatarImg} />
                                 </Grid>
                             </Grid>
 
@@ -123,20 +126,16 @@ export default function Header(props) {
                                 {/* <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle> */}
                                 <DialogContent>
                                     <DialogContentText id="alert-dialog-description">
-                                        Hi {user.name}.Do you want to Logout?
-          </DialogContentText>
+                                        Hi. Do you want to Logout?
+                                    </DialogContentText>
                                 </DialogContent>
                                 <DialogActions>
-                                    <GoogleLogout
-                                        clientId="1005662878144-7c2nuc6vs5ercrued6cpbja03rp3k7kf.apps.googleusercontent.com"
-                                        buttonText='Logout'
-                                        onLogoutSuccess={logout}
-                                        onFailure={handleLogoutFailure}
-                                    >
-                                    </GoogleLogout>
-                                    <Button onClick={handleClose} color="secondary" autoFocus>
-                                        Cancel
-          </Button>
+                                    <Button onClick={logout} color="secondary" autoFocus>
+                                        Yes
+                                    </Button>
+                                    <Button onClick={handleClose} autoFocus>
+                                        No
+                                </Button>
                                 </DialogActions>
                             </Dialog>
                         </Fragment>

@@ -2,7 +2,6 @@ const initState = {
     isLoggedin: false,
     id: '',
     name: '',
-    imageUrl: '',
     token: '',
     error: ''
 }
@@ -30,7 +29,6 @@ export default function userReducer(state = initState, action) {
                 isLoggedin: false,
                 id: '',
                 name: '',
-                imageUrl: '',
                 token: '',
                 error: ''
             }
