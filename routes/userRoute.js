@@ -4,63 +4,83 @@ const User = require('../models/User');
 var jwt = require('jsonwebtoken');
 const config = require('config');
 const auth = require('../middleware/auth');
+const bcrypt = require('bcrypt');
 
 router.post('/register', async (req, res) => {
-    const { name, email, googleId, imageUrl } = (req.body);
+    const { pin } = (req.body);
+    var ip = '';
 
-    let user = await User.findOne({ email });
+    try {
+        var IPs = req.headers['x-forwarded-for'] ||
+            req.connection.remoteAddress ||
+            req.socket.remoteAddress ||
+            req.connection.socket.remoteAddress;
 
-    if (user) {
-        const payload = {
-            user: {
-                id: user.id
+        if (IPs.indexOf(":") !== -1) {
+            IPs = IPs.split(":")[IPs.split(":").length - 1]
+        }
+        ip = IPs.split(",")[0];
+
+        let user = await User.findOne({ ip });
+
+        if (user) {
+            const isMatch = await bcrypt.compare(pin, user.pin);
+
+            if (!isMatch) {
+                return res
+                    .status(400)
+                    .json({ message: 'Invalid Credential' });
+            } else {
+                const payload = {
+                    user: {
+                        id: user.id
+                    }
+                };
+
+                jwt.sign(
+                    payload,
+                    config.get('jwtSecret'),
+                    { expiresIn: '7 days' },
+                    (err, token) => {
+                        if (err) throw err;
+                        res.json({
+                            token,
+                        });
+                    }
+                );
             }
-        };
-        jwt.sign(
-            payload,
-            config.get('jwtSecret'),
-            { expiresIn: '7 days' },
-            (err, token) => {
-                if (err) throw err;
-                res.json({
-                    token,
-                    id: user.id,
-                    name: name,
-                    imageUrl: imageUrl
-                });
-            }
-        );
 
-    } else {
+        } else {
 
-        user = new User({
-            name,
-            email,
-            googleId,
-            imageUrl
-        });
+            user = new User({
+                ip
+            });
+            const salt = await bcrypt.genSalt(10);
 
-        let saved = await user.save();
+            user.pin = await bcrypt.hash(pin, salt);
 
-        const payload = {
-            user: {
-                id: saved.id
-            }
-        };
-        jwt.sign(
-            payload,
-            config.get('jwtSecret'),
-            { expiresIn: '7 days' },
-            (err, token) => {
-                if (err) throw err;
-                res.json({
-                    token,
-                    id: saved.id,
-                    name: name,
-                    imageUrl: imageUrl
-                });
-            }
-        );
+            let saved = await user.save();
+
+            const payload = {
+                user: {
+                    id: saved.id
+                }
+            };
+            jwt.sign(
+                payload,
+                config.get('jwtSecret'),
+                { expiresIn: '7 days' },
+                (err, token) => {
+                    if (err) throw err;
+                    res.json({
+                        token
+                    });
+                }
+            );
+        }
+
+    } catch (err) {
+        return res.json({ message: 'Error occured! Please try again.' });
     }
 
 });
@@ -77,8 +97,6 @@ router.get('/getUser', auth, async (req, res) => {
         if (user) {
             return res.json({
                 id: user.id,
-                name: user.name,
-                imageUrl: user.imageUrl
             });
         } else {
             return res

@@ -5,13 +5,12 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { GoogleLogin } from 'react-google-login';
 import Box from '@material-ui/core/Box';
 import Carousel from 'react-material-ui-carousel';
 import { registerUser } from '../actions/userAction';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-
+import PinInput from "react-pin-input";
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -75,6 +74,9 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         textAlign: 'center',
         color: '#8c8c8c'
+    },
+    pinInput: {
+
     }
 
 }));
@@ -90,6 +92,7 @@ export default function Login(props) {
 
     const [error, setError] = useState('');
     const [alert, setAlert] = useState(false);
+    const [pin, setPin] = useState('');
 
     const handleAlert = () => {
         setAlert(true);
@@ -102,16 +105,15 @@ export default function Login(props) {
         setAlert(false);
     };
 
-    const responseGoogle = (response) => {
-        if (response) {
-            let userObj = {
-                email: response.profileObj.email,
-                name: response.profileObj.name,
-                imageUrl: response.profileObj.imageUrl,
-                googleId: response.profileObj.googleId
-            };
-            dispatch(registerUser(userObj));
+    const onPinChange = (value, index) => {
+        setPin(value);
+    };
+
+    const save = (value) => {
+        let data = {
+            pin: value
         }
+        dispatch(registerUser(data));
     }
 
     useEffect(() => {
@@ -160,39 +162,41 @@ export default function Login(props) {
                         </Grid>
 
                         <Grid item xs={12} sm={12} md={12} lg={12} className={classes.imgCenter}>
-                            <GoogleLogin
-                                clientId="1005662878144-7c2nuc6vs5ercrued6cpbja03rp3k7kf.apps.googleusercontent.com"
 
-                                buttonText={
-                                    <Typography variant="button">Sign In </Typography>
-                                }
-                                onSuccess={responseGoogle}
-                                onFailure={responseGoogle}
-                                // isSignedIn={true}
-//                                 cookiePolicy={'single_host_origin'}
+                            <PinInput
+                                length={4}
+                                focus
+                                secret
+                                style={{ padding: '10px' }}
+                                inputStyle={{
+                                    borderColor: 'transparent transparent #8e7040 transparent', width: '50px',
+                                    height: '50px', color: '#f9a826'
+                                }}
+                                inputFocusStyle={{ borderColor: 'transparent transparent #f9a826 transparent' }}
+                                type="numeric"
+                                onChange={(value) => { onPinChange(value) }}
+                                onComplete={(value) => { save(value) }}
                             />
                         </Grid>
+
                         <Grid item xs={12} sm={12} md={12} lg={12} className={classes.infoText}>
                             <Typography variant="caption">
-                                Sign In using your Google account and explore the features.
+                                Create a PIN once and explore the features forever.
                         </Typography>
 
                         </Grid>
-
-                        {
-                            error ? (
-                                <Grid item xs={12} sm={12} md={12} lg={12} className={classes.imgCenter}
-                                    style={{ marginBottom: '32px' }}>
-
+                        <Grid item xs={12} sm={12} md={12} lg={12} className={classes.imgCenter}
+                            style={{ marginBottom: '48px' }}>
+                            {
+                                error ? (
                                     <Snackbar open={alert} autoHideDuration={3000} onClose={handleAlertClose}>
                                         <Alert onClose={handleAlertClose} severity='error'>
                                             {error}
                                         </Alert>
                                     </Snackbar>
-
-                                </Grid>
-                            ) : <></>
-                        }
+                                ) : <></>
+                            }
+                        </Grid>
 
 
 

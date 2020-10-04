@@ -104,7 +104,7 @@ export default function Dashboard(props) {
         setTimeout(() => {
             setToken(localStorage.getItem('token'));
         }, 500);
-        if (token) {           
+        if (token) {
             dispatch(getAllTransactions(token));
             dispatch(getMonthsTransactions(token, month[new Date().getMonth()]));
             dispatch(getBudget(token, currentMonth));
@@ -182,23 +182,6 @@ export default function Dashboard(props) {
                                             <Divider />
                                         </Grid>
 
-                                        <Grid item xs={12} md={12} lg={12}>
-                                            <Grid container spacing={1}>
-
-                                                {/* <Grid item xs={12} md={12} lg={12}>
-                                    <Title>Expemses</Title>
-                                </Grid>
-
-                                <Grid item sm={12} xs={12} md={12} lg={12}>
-                                    <Budget title="Planned" data="70" />
-                                </Grid>
-
-                                <Grid item sm={12} xs={12} md={12} lg={12}>
-                                    <Budget title="Actual" data="50" />
-                                </Grid> */}
-
-                                            </Grid>
-                                        </Grid>
 
                                     </Grid>
                                     <Box pt={4}>

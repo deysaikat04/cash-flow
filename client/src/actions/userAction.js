@@ -9,10 +9,10 @@ export const registerUser = (data) => {
             })
             .catch((error) => {
                 if (error.response) {
+                    console.log(error.response.data)
                     dispatch(authError(error.response.data.message))
 
                 } else {
-
                     dispatch(authError(error.message))
                 }
             })
