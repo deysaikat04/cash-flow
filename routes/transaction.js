@@ -77,9 +77,9 @@ router.post('/add', auth, async (req, res) => {
                 let updateData = await pushInExistingMonth(userId, monthName, transactions);
                 if (updateData) {
                     var TransactionArr = await getTransactionsByMonth(userId, monthName);
-                    res.json(TransactionArr);
+                    res.json(TransactionArr.reverse());
                 } else {
-                    res.status(500).send('Server Error1');
+                    res.status(500).send('Server Error');
                 }
 
             } else {
@@ -89,9 +89,9 @@ router.post('/add', auth, async (req, res) => {
                 if (updateData.nModified === 1) {
                     var allTransactions = await getAllTransactionByUser(userId);
                     let data = toArray(allTransactions);
-                    res.json(data);
+                    res.json(data.reverse());
                 } else {
-                    res.status(500).send('Server Error2');
+                    res.status(500).send('Server Error');
                 }
 
             }

@@ -11,6 +11,7 @@ import BudgetForm from './BudgetForm';
 import Login from './Login';
 
 import { savedUser } from '../actions/userAction';
+import Register from './Register';
 
 export const light = {
   palette: {
@@ -82,6 +83,13 @@ function App() {
           <Switch>
             <Route exact path='/' render={() => isloggedIn ? <Redirect to='/dashboard' /> : <Redirect to='/login' />}
             />
+
+            <Route exact path='/register' render={(props) => <Register
+              {...props}
+              theme={theme}
+              checkIfLoggedIn={checkIfLoggedIn}
+            />} />
+
 
             <Route exact path='/login' render={(props) => <Login
               {...props}

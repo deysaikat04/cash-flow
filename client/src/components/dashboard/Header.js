@@ -34,10 +34,6 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'right',
         cursor: 'pointer'
     },
-    avatarImg: {
-        width: '85%',
-        height: '100%',
-    }
 }));
 
 export default function Header(props) {
@@ -107,13 +103,13 @@ export default function Header(props) {
                             <Grid container spacing={3}>
                                 <Grid item xs={10} sm={10} md={10} lg={10} className={classes.leftAlign}>
                                     <Typography variant='caption'>
-                                        {greeting}
+                                        Hey {user.name}, {greeting}
                                     </Typography>
                                 </Grid>
 
                                 <Grid item xs={2} sm={2} md={2} lg={2} className={classes.avatar}
                                     onClick={handleClickOpen}>
-                                    <Avatar alt="user" src='./img/user.svg' className={classes.avatarImg} />
+                                    <Avatar alt="user" src='./img/user.svg' />
                                 </Grid>
                             </Grid>
 
@@ -126,7 +122,7 @@ export default function Header(props) {
                                 {/* <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle> */}
                                 <DialogContent>
                                     <DialogContentText id="alert-dialog-description">
-                                        Hi. Do you want to Logout?
+                                        Hey {user.name}. Want to Logout?
                                     </DialogContentText>
                                 </DialogContent>
                                 <DialogActions>

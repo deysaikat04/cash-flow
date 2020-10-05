@@ -260,6 +260,7 @@ export default function AddData(props) {
         setMultipleAmount();
         resetTranscript();
         setVoicePressed(false);
+        setTransactionMode('Cash');
     };
 
     const handleClick = (type) => {

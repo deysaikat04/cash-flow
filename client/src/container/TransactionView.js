@@ -94,8 +94,6 @@ export default function TransactionView() {
                 </Toolbar>
             </AppBar>
             <main className={classes.content}>
-                {/* <div className={classes.appBarSpacer} /> */}
-                {/* <Header title='"Beware of little expenses. A small leak will sink a great ship.  – Benjamin Franklin"' /> */}
                 <Container maxWidth="lg" className={classes.container}>
                     <Grid container spacing={3}>
 
@@ -106,7 +104,6 @@ export default function TransactionView() {
                         </Grid>
 
                     </Grid>
-
                 </Container>
 
             </main>

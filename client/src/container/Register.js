@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory, Link, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Carousel from 'react-material-ui-carousel';
-import { loginUser, resetAuthError } from '../actions/userAction';
+import { registerUser, resetAuthError } from '../actions/userAction';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import PinInput from "react-pin-input";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
@@ -27,18 +27,6 @@ function Copyright() {
     );
 }
 
-const items = [
-    { src: "./img/wallet.svg", name: 'image1' },
-    { src: "./img/login2.svg", name: 'image2' },
-    { src: "./img/savings.svg", name: 'image3' },
-];
-
-function Image(props) {
-    return (
-        <img src={props.item.src} width='100px' height='100px' alt={props.item.name} />
-    )
-}
-
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
@@ -49,8 +37,10 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center',
         overflow: 'hidden'
     },
+    content: {
+        marginTop: theme.spacing(8),
+    },
     imgCenter: {
-
         margin: theme.spacing(2)
     },
     title: {
@@ -61,6 +51,9 @@ const useStyles = makeStyles((theme) => ({
         color: '#b7b7b7',
         padding: theme.spacing(0, 2),
         margin: theme.spacing(1, 4)
+    },
+    input: {
+        color: '#ffffff'
     },
     infoText: {
         color: '#8c8c8c',
@@ -76,13 +69,8 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center',
         color: '#8c8c8c'
     },
-    linkText: {
-        color: '#ffffff'
-    },
-    input: {
-        color: '#ffffff'
-    },
     form: {
+        marginBottom: theme.spacing(1),
         alignItems: 'center',
         margin: 'auto',
 
@@ -90,16 +78,20 @@ const useStyles = makeStyles((theme) => ({
             width: '80%',
         },
         [theme.breakpoints.up('md')]: {
-            width: '40%',
+            width: '60%',
         },
+        [theme.breakpoints.up('lg')]: {
+            width: '70%',
+        },
+    },
+    linkText: {
+        color: '#ffffff'
     }
 
 }));
 
-export default function Login(props) {
+export default function Register(props) {
     const classes = useStyles();
-
-    const history = useHistory();
 
     const dispatch = useDispatch();
 
@@ -110,12 +102,12 @@ export default function Login(props) {
     const [dbAlert, setDbAlert] = useState(false);
 
     const [formAlert, setFormAlert] = useState(false);
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [pin, setPin] = useState('');
-    const [error, setError] = useState({ email: false, pin: false });
-    const [errorMsg, setErrorMsg] = useState({ email: '', pin: '' });
+    const [error, setError] = useState({ name: false, email: false, pin: false });
+    const [errorMsg, setErrorMsg] = useState({ name: '', email: '', pin: '' });
     const [showMsg, setShowMsg] = useState(false);
-
 
     const handleDbAlert = () => {
         setDbAlert(true);
@@ -146,6 +138,30 @@ export default function Login(props) {
 
     const validate = (name, value) => {
         switch (name) {
+            case 'name':
+                setName(value);
+                if (value === '') {
+                    setError({
+                        ...error,
+                        name: true
+                    })
+                    setErrorMsg({ ...errorMsg, name: 'Field is required!' });
+
+                } else if (!value.match(/^[a-zA-z ]*$/)) {
+                    setError({
+                        ...error,
+                        name: true
+                    });
+                    setErrorMsg({ ...errorMsg, name: 'Name should not have any digits!' });
+                } else {
+                    setError({
+                        ...error,
+                        name: false
+                    });
+                    setErrorMsg({ ...errorMsg, name: '' });
+                }
+                break;
+
             case 'email':
                 setEmail(value);
                 if (value === '') {
@@ -178,12 +194,6 @@ export default function Login(props) {
                         pin: true
                     });
                     setErrorMsg({ ...errorMsg, pin: 'Field is required!' });
-                } else if (!value.match(/^[0-9]+$/)) {
-                    setError({
-                        ...error,
-                        pin: true
-                    });
-                    setErrorMsg({ ...errorMsg, pin: 'PIN must be of 4 digits!' });
                 } else if (value.length < 4 || value.length > 4) {
                     setError({
                         ...error,
@@ -204,19 +214,24 @@ export default function Login(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        let errors = !error.email && !error.pin;
-        let data = email && pin;
+
+        let errors = !error.name && !error.email && !error.pin;
+        let data = name && email && pin;
 
         if (errors && data) {
             let userObj = {
+                name,
                 email,
                 pin
             };
             setShowMsg(false);
-            dispatch(loginUser(userObj));
+            setName('');
+            setEmail('');
+            setPin('');
+            dispatch(registerUser(userObj));
+
         } else {
             setShowMsg(true);
-
         }
         handleFormAlert();
     }
@@ -225,16 +240,16 @@ export default function Login(props) {
         if (user.error) {
             setDbError(user.error);
             setDbErrorMsg(user.errorMsg);
-            dispatch(resetAuthError());
             handleDbAlert();
+            dispatch(resetAuthError());
         }
-        if (user.isLoggedin) {
-            props.checkIfLoggedIn(true);
-            history.push('/dashboard');
-        }
+
+
     }, [user]);
 
-
+    if (user.isLoggedin) {
+        return <Redirect to='/dashboard' />
+    }
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -243,33 +258,38 @@ export default function Login(props) {
                 <Grid item xs={12} md={12} lg={12}>
                     <Grid container>
 
-                        <Grid item xs={12} sm={12} md={12} lg={12} className={classes.imgCenter}>
-                            <Carousel
-                                autoPlay={true}
-                                timer={500}
-                                animation="fade"
-                            >
-                                {
-                                    items.map((item, i) => <Image key={i} item={item} />)
-                                }
-                            </Carousel>
-                        </Grid>
-
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Typography variant="h5" className={classes.title}>
                                 CASHFLOW
-                        </Typography>
+                             </Typography>
                         </Grid>
 
                         <Grid item xs={12} sm={12} md={12} lg={12} className={classes.subTitle}>
-                            <Typography variant="body2">
-                                Manage your transactions and budgets. Save money.
+                            <Typography variant="body1">
+                                SIGN UP
                         </Typography>
                         </Grid>
 
                         <Grid item xs={12} sm={12} md={12} lg={12} className={classes.imgCenter}>
-
                             <form className={classes.form} onSubmit={handleSubmit}>
+
+                                <TextField
+                                    autoFocus
+                                    variant="filled"
+                                    color="secondary"
+                                    margin="normal"
+                                    InputProps={{
+                                        className: classes.input
+                                    }}
+                                    fullWidth
+                                    name="name"
+                                    label="Name"
+                                    id="name"
+                                    placeholder='John Doe'
+                                    onChange={handleChange}
+                                    value={name}
+                                    {...(error.name && { error: true, helperText: errorMsg.name })}
+                                />
 
                                 <TextField
                                     variant="filled"
@@ -293,17 +313,18 @@ export default function Login(props) {
                                     color="secondary"
                                     margin="normal"
                                     fullWidth
-                                    type="password"
+                                    type="number"
                                     name="pincode"
                                     label="Pin"
                                     id="pincode"
                                     InputProps={{
-                                        className: classes.input,
+                                        className: classes.input
                                     }}
-                                    // onInput={(e) => {
-                                    //     e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 4)
-                                    // }}
+                                    onInput={(e) => {
+                                        e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 4)
+                                    }}
                                     placeholder='ex. 1234'
+                                    helperText="This pin will help you to login."
                                     onChange={handleChange}
                                     value={pin}
                                     {...(error.pin && { error: true, helperText: errorMsg.pin })}
@@ -316,16 +337,16 @@ export default function Login(props) {
                                     color="secondary"
                                     style={{ marginTop: '24px' }}
                                 >
-                                    Log in
+                                    Sign up
                                 </Button>
                             </form>
                         </Grid>
 
                         <Grid item xs={12} sm={12} md={12} lg={12} className={classes.infoText}>
                             <Typography variant="caption">
-                                I don't have an account.
-                                <Link to='/register' className={classes.linkText}>
-                                    Take me to Signup.
+                                I already have an account.
+                                <Link to='/login' className={classes.linkText}>
+                                    Take me to Login.
                                 </Link>
                             </Typography>
                         </Grid>
@@ -333,7 +354,7 @@ export default function Login(props) {
                         {
                             dbError ? (
                                 <Grid item xs={12} sm={12} md={12} lg={12} className={classes.imgCenter}>
-                                    <Snackbar open={dbAlert} autoHideDuration={3000} onClose={handleDbAlertClose} style={{ marginBottom: '30px' }}>
+                                    <Snackbar open={dbAlert} autoHideDuration={2000} onClose={handleDbAlertClose} style={{ marginBottom: '30px' }}>
                                         <Alert onClose={handleDbAlertClose} severity='error'>
                                             {dbErrorMsg ? dbErrorMsg : 'Sorry for the inconvenience. Please try again later.'}
                                         </Alert>
@@ -343,9 +364,21 @@ export default function Login(props) {
                         }
 
                         {
+                            user && user.id ? (
+                                <Grid item xs={12} sm={12} md={12} lg={12} className={classes.imgCenter}>
+                                    <Snackbar open={alert} autoHideDuration={2000} onClose={handleDbAlertClose} style={{ marginBottom: '30px' }}>
+                                        <Alert onClose={handleDbAlertClose} severity='success'>
+                                            Registered successfully!
+                                    </Alert>
+                                    </Snackbar>
+                                </Grid>
+                            ) : null
+                        }
+
+                        {
                             showMsg ? (
                                 <Grid item xs={12} sm={12} md={12} lg={12} className={classes.imgCenter}>
-                                    <Snackbar open={formAlert} autoHideDuration={3000} onClose={handleFormAlertClose} style={{ marginBottom: '30px' }}>
+                                    <Snackbar open={formAlert} autoHideDuration={2000} onClose={handleFormAlertClose} style={{ marginBottom: '30px' }}>
                                         <Alert onClose={handleFormAlertClose} severity='error'>
                                             Please fll all the fields properly to continue.
                                         </Alert>

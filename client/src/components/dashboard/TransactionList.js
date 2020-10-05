@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TransactionList(props) {
     const classes = useStyles();
-    const { transactionType, amount, category, transactionMode, createdAt } = props;
+    const { transactionType, amount, category, description, transactionMode, createdAt } = props;
 
 
 
@@ -53,9 +53,12 @@ export default function TransactionList(props) {
                 </ListItemAvatar>
                 <ListItemText
                     primary={'₹' + amount}
-                    secondary={category}
+                    secondary={description}
                 />
                 <ListItemSecondaryAction>
+                    <Typography variant="caption" style={{ display: 'block' }}>
+                        {category}
+                    </Typography>
                     <Typography variant="caption" style={{ display: 'block' }}>
                         {createdAt}
                     </Typography>
