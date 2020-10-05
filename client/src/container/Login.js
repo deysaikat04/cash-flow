@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,20 +12,12 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Footer from '../components/Footer';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-function Copyright() {
-    return (
-        <Typography variant="body2" align="center">
-            Crafted with Love by Saikat Dey {" "}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
 
 const items = [
     { src: "./img/wallet.svg", name: 'image1' },
@@ -155,7 +147,7 @@ export default function Login(props) {
                     });
                     setErrorMsg({ ...errorMsg, email: 'Field is required!' });
                 }
-                else if (!value.match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/)) {
+                else if (!value.match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2, 5})$/)) {
                     setError({
                         ...error,
                         email: true
@@ -358,7 +350,7 @@ export default function Login(props) {
 
                     </Grid>
                     <Box pt={4} className={classes.footer}>
-                        <Copyright />
+                        <Footer />
                     </Box>
                 </Grid>
 

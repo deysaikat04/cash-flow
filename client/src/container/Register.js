@@ -9,9 +9,9 @@ import Box from '@material-ui/core/Box';
 import { registerUser, resetAuthError } from '../actions/userAction';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import PinInput from "react-pin-input";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Footer from '../components/Footer';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
         overflow: 'hidden'
     },
     content: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(6),
     },
     imgCenter: {
         margin: theme.spacing(2)
@@ -387,11 +387,9 @@ export default function Register(props) {
                             ) : <></>
                         }
 
-
-
                     </Grid>
                     <Box pt={4} className={classes.footer}>
-                        <Copyright />
+                        <Footer />
                     </Box>
                 </Grid>
 
