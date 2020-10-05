@@ -1,9 +1,9 @@
 const initState = {
     isLoggedin: false,
-    id: '',
     name: '',
     token: '',
-    error: ''
+    error: false,
+    errorMsg: ''
 }
 
 export default function userReducer(state = initState, action) {
@@ -15,7 +15,8 @@ export default function userReducer(state = initState, action) {
                 ...state,
                 ...payload,
                 isLoggedin: true,
-                error: ''
+                error: false,
+                errorMsg: ''
             }
 
         case 'GET_USER':
@@ -29,15 +30,23 @@ export default function userReducer(state = initState, action) {
                 isLoggedin: false,
                 id: '',
                 name: '',
-                token: '',
-                error: ''
+                token: false,
+                errorMsg: ''
             }
         case 'AUTH_ERROR':
             localStorage.clear();
             return {
                 ...state,
                 isLoggedin: false,
-                error: payload
+                error: true,
+                errorMsg: payload
+            }
+        case 'RESET_AUTH_ERROR':
+            localStorage.clear();
+            return {
+                ...state,
+                error: false,
+                errorMsg: ''
             }
 
         default:
