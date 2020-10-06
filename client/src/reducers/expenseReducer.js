@@ -3,6 +3,7 @@ const initState = {
     inserted: false,
     items: [],
     monthlyItems: [],
+    groupedItems: [],
     error: false
 };
 
@@ -28,6 +29,13 @@ export default function expenseReducer(state = initState, action) {
             return {
                 ...state,
                 monthlyItems: [...action.payload],
+                loading: false,
+                error: false
+            }
+        case 'GROUPED_EXPENSES':
+            return {
+                ...state,
+                groupedItems: [...action.payload],
                 loading: false,
                 error: false
             }

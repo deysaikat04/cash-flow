@@ -61,10 +61,11 @@ const useStyles = makeStyles((theme) => ({
     },
     footer: {
         bottom: 0,
-        position: 'absolute',
+        position: 'relative',
         width: '100%',
         margin: 'auto',
         padding: theme.spacing(2),
+        marginTop: theme.spacing(4),
         textAlign: 'center',
         color: '#8c8c8c'
     },
@@ -147,7 +148,7 @@ export default function Login(props) {
                     });
                     setErrorMsg({ ...errorMsg, email: 'Field is required!' });
                 }
-                else if (!value.match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2, 5})$/)) {
+                else if (!value.match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/)) {
                     setError({
                         ...error,
                         email: true
@@ -327,7 +328,7 @@ export default function Login(props) {
                                 <Grid item xs={12} sm={12} md={12} lg={12} className={classes.imgCenter}>
                                     <Snackbar open={dbAlert} autoHideDuration={3000} onClose={handleDbAlertClose} style={{ marginBottom: '30px' }}>
                                         <Alert onClose={handleDbAlertClose} severity='error'>
-                                            {dbErrorMsg ? dbErrorMsg : 'Sorry for the inconvenience. Please try again later.'}
+                                            {dbErrorMsg ? dbErrorMsg : 'Oops! An error occured on our side.'}
                                         </Alert>
                                     </Snackbar>
                                 </Grid>

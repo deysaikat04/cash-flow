@@ -109,7 +109,7 @@ export default function Header(props) {
 
                                 <Grid item xs={2} sm={2} md={2} lg={2} className={classes.avatar}
                                     onClick={handleClickOpen}>
-                                    <Avatar alt="user" src='./img/user.svg' />
+                                    <Avatar alt="user" src='./img/user_light.svg' />
                                 </Grid>
                             </Grid>
 

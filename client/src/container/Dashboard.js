@@ -14,7 +14,7 @@ import Header from '../components/dashboard/Header';
 import SummaryCard from '../components/dashboard/SummaryCard';
 import Transactions from '../components/dashboard/Transactions';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { getAllTransactions, getMonthsTransactions } from '../actions/expenseAction';
+import { getAllTransactions, getMonthsTransactions, getTransactionsByGrouped } from '../actions/expenseAction';
 import { getBudget } from '../actions/budgetAction';
 
 
@@ -106,6 +106,7 @@ export default function Dashboard(props) {
         }, 500);
         if (token) {
             dispatch(getAllTransactions(token));
+            dispatch(getTransactionsByGrouped(token));
             dispatch(getMonthsTransactions(token, month[new Date().getMonth()]));
             dispatch(getBudget(token, currentMonth));
         }
