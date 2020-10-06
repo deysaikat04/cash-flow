@@ -62,10 +62,11 @@ const useStyles = makeStyles((theme) => ({
     },
     footer: {
         bottom: 0,
-        position: 'absolute',
+        position: 'relative',
         width: '100%',
         margin: 'auto',
         padding: theme.spacing(2),
+        marginTop: theme.spacing(4),
         textAlign: 'center',
         color: '#8c8c8c'
     },
@@ -356,7 +357,7 @@ export default function Register(props) {
                                 <Grid item xs={12} sm={12} md={12} lg={12} className={classes.imgCenter}>
                                     <Snackbar open={dbAlert} autoHideDuration={2000} onClose={handleDbAlertClose} style={{ marginBottom: '30px' }}>
                                         <Alert onClose={handleDbAlertClose} severity='error'>
-                                            {dbErrorMsg ? dbErrorMsg : 'Sorry for the inconvenience. Please try again later.'}
+                                            {dbErrorMsg ? dbErrorMsg : 'Oops! An error occured on our side.'}
                                         </Alert>
                                     </Snackbar>
                                 </Grid>
@@ -386,10 +387,13 @@ export default function Register(props) {
                                 </Grid>
                             ) : <></>
                         }
+                        <Grid item xs={12} sm={12} md={12} lg={12} className={classes.footer}>
+                            <Footer />
+                        </Grid>
 
                     </Grid>
-                    <Box pt={4} className={classes.footer}>
-                        <Footer />
+                    <Box pt={4} >
+
                     </Box>
                 </Grid>
 

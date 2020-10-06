@@ -50,6 +50,31 @@ export function getAllTransactions(token) {
     }
 }
 
+export function getTransactionsByGrouped(token) {
+
+    return dispatch => {
+        let url = `/api/transactions/grouped`;
+        axios.get(url,
+            {
+                headers: {
+                    'authorization': token,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => {
+                dispatch(groupedExpenses(res.data));
+            })
+            .catch(err => {
+                if (err.response) {
+                    dispatch(expensesError(err.response.data.message));
+                } else {
+                    dispatch(expensesError(err.message));
+                }
+            })
+    }
+}
+
 export function addTransactions(token, data) {
     return dispatch => {
         let url = `/api/transactions/add`;
@@ -80,6 +105,13 @@ export function addTransactions(token, data) {
 export const allExpenses = (data) => {
     return {
         type: 'GET_EXPENSES',
+        payload: data
+    }
+}
+
+export const groupedExpenses = (data) => {
+    return {
+        type: 'GROUPED_EXPENSES',
         payload: data
     }
 }

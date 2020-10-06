@@ -146,7 +146,7 @@ export default function SummaryCard(props) {
                                 className={classes.fadeText}>
                                 Balance
                         </Typography>
-                            <Typography variant="body1" gutterBottom >
+                            <Typography variant="body1" gutterBottom style={{ fontSize: '20px' }}>
                                 ₹{balance}
                             </Typography>
                         </div>
