@@ -27,7 +27,7 @@ router.get('/monthly/:month', auth, async (req, res) => {
         } else {
             try {
                 var TransactionArr = await getTransactionsByMonth(userId, month);
-                res.json(TransactionArr);
+                res.json(TransactionArr.reverse());
             } catch (error) {
                 res.json([]);
             }
@@ -246,16 +246,15 @@ router.get('/grouped', auth, async (req, res) => {
         { $project: { 'months.monthName': 1, 'months.transactions': 1, _id: 0 } }
     ]);
 
-    let value = [];
+    let returnedData = {};
 
-    data.map(item => {
+    data.map((item, index) => {
         let monthObj = {};
         var { monthName, transactions } = item.months;
-        console.log(monthName, transactions);
-        monthObj[monthName] = transactions;
-        value.push(monthObj);
+        monthObj[monthName] = transactions.reverse();
+        returnedData = { ...returnedData, ...monthObj };
     })
-    res.json(value.reverse())
+    res.json(returnedData)
 })
 
 module.exports = router;

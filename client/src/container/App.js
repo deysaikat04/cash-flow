@@ -49,7 +49,7 @@ function App() {
   const [theme, setTheme] = useState(storedTheme ? false : true);
 
   const [isloggedIn, setIsLoggedIn] = useState(false);
-  const [token] = useState(localStorage.getItem('token'));
+  const [token] = useState(sessionStorage.getItem('token'));
   const dispatch = useDispatch();
 
   const { user } = useSelector(state => ({

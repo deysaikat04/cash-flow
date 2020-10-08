@@ -90,6 +90,7 @@ export function addTransactions(token, data) {
                 dispatch(setExpenses(res.data));
             })
             .catch((error) => {
+                console.log(error.response)
                 if (error.response) {
                     dispatch(expensesError(error.response.data.message))
 

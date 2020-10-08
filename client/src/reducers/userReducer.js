@@ -10,7 +10,7 @@ export default function userReducer(state = initState, action) {
     const { type, payload } = action;
     switch (type) {
         case 'SET_USER':
-            localStorage.setItem('token', payload.token);
+            sessionStorage.setItem('token', payload.token);
             return {
                 ...state,
                 ...payload,
@@ -24,7 +24,7 @@ export default function userReducer(state = initState, action) {
                 ...state,
             }
         case 'LOGOUT_USER':
-            localStorage.clear();
+            sessionStorage.clear();
             return {
                 ...state,
                 isLoggedin: false,
@@ -34,7 +34,7 @@ export default function userReducer(state = initState, action) {
                 errorMsg: ''
             }
         case 'AUTH_ERROR':
-            localStorage.clear();
+            // sessionStorage.clear();
             return {
                 ...state,
                 isLoggedin: false,
@@ -42,7 +42,7 @@ export default function userReducer(state = initState, action) {
                 errorMsg: payload
             }
         case 'RESET_AUTH_ERROR':
-            localStorage.clear();
+            // sessionStorage.clear();
             return {
                 ...state,
                 error: false,

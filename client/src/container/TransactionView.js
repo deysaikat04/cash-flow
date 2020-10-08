@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import { useHistory, Redirect } from 'react-router-dom';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
@@ -13,6 +13,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import Transactions from '../components/dashboard/Transactions';
 
+import { getTransactionsByGrouped } from '../actions/expenseAction';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -46,14 +47,12 @@ const useStyles = makeStyles((theme) => ({
     fixedHeight: {
         height: 280,
     },
-
     expenseText: {
         color: '#ff8151',
         fontWeight: '600',
         float: 'right'
     },
     incomeText: {
-        // color: '#344955',
         fontWeight: '600',
         float: 'right'
     },
@@ -68,10 +67,50 @@ export default function TransactionView() {
     const classes = useStyles();
     const history = useHistory();
 
+    const dispatch = useDispatch();
+
+    const [hasData, setHasData] = useState(false);
+
     const { expenses, user } = useSelector(state => ({
-        expenses: state.expenses.items,
+        expenses: state.expenses,
         user: state.user
     }), shallowEqual);
+
+    useEffect(() => {
+        if (sessionStorage.getItem('token')) {
+            dispatch(getTransactionsByGrouped(sessionStorage.getItem('token')));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (expenses.groupedItems) {
+            setHasData(true);
+        }
+    }, [expenses]);
+
+
+    const dataCards = () => {
+        let rows = [];
+        if (expenses.groupedItems) {
+            var list = Object.entries(expenses.groupedItems).map(([key, value]) => {
+                return (
+                    <Fragment key={key}>
+                        <Grid item xs={12} md={12} lg={12}>
+                            <Typography>{key}</Typography>
+                        </Grid>
+
+                        <Grid item xs={12} md={12} lg={12}>
+                            <Grid container>
+                                <Transactions showAll={true} data={value} />
+                            </Grid>
+                        </Grid>
+                    </Fragment>
+                );
+            });
+            rows.push(list);
+        }
+        return rows;
+    }
 
 
     if (!user.isLoggedin) {
@@ -97,11 +136,11 @@ export default function TransactionView() {
                 <Container maxWidth="lg" className={classes.container}>
                     <Grid container spacing={3}>
 
-                        <Grid item xs={12} md={12} lg={12}>
-                            <Grid container>
-                                <Transactions showAll={true} data={expenses} />
-                            </Grid>
-                        </Grid>
+                        {
+                            hasData ? (
+                                dataCards()
+                            ) : null
+                        }
 
                     </Grid>
                 </Container>

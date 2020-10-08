@@ -216,7 +216,7 @@ export default function AddData(props) {
                 createdAt: new Date().toDateString(),
                 userId: user.id
             }
-            dispatch(addTransactions(localStorage.getItem('token'), data));
+            dispatch(addTransactions(sessionStorage.getItem('token'), data));
 
             setFormMsg({
                 ...formMsg,

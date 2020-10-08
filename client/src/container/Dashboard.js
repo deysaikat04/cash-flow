@@ -102,7 +102,7 @@ export default function Dashboard(props) {
 
     useEffect(() => {
         setTimeout(() => {
-            setToken(localStorage.getItem('token'));
+            setToken(sessionStorage.getItem('token'));
         }, 500);
         if (token) {
             dispatch(getAllTransactions(token));
@@ -154,7 +154,7 @@ export default function Dashboard(props) {
 
                                         <Grid item xs={12} md={12} lg={12}>
                                             <Grid container>
-                                                <Transactions showAll={false} data={expenses.items.slice(0, 4)} />
+                                                <Transactions showAll={false} data={expenses.monthlyItems.slice(0, 4)} />
                                             </Grid>
                                         </Grid>
 
