@@ -38,7 +38,7 @@ export const loginUser = (data) => {
 
 export const savedUser = (token) => {
     return dispatch => {
-        axios.get('/api/getUser',
+        axios.get('/api/auth/getUser',
             {
                 headers: {
                     'authorization': token,

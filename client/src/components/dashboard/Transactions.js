@@ -49,23 +49,25 @@ export default function Transactions(props) {
         <React.Fragment >
             <Grid item xs={12} md={12} lg={12}>
                 <Grid container spacing={1}>
-                    <Grid item xs={9} sm={9} md={9} lg={9}>
-                        <Title>List of Transactions</Title>
-                    </Grid>
-                    <Grid item xs={3} sm={3} md={3} lg={3}
-                    >
-                        {
-                            !showAll ? <Link to='/transactions'>
-                                <Typography variant="caption"
-                                    style={{
-                                        color: '#a2a2a2',
-                                        float: 'right'
-                                    }}>
-                                    View all
-                                </Typography>
-                            </Link> : null
-                        }
-                    </Grid>
+                    {
+                        !showAll ? (<Fragment>
+                            <Grid item xs={9} sm={9} md={9} lg={9}>
+                                <Title>List of Transactions</Title>
+                            </Grid>
+                            <Grid item xs={3} sm={3} md={3} lg={3}>
+                                <Link to='/transactions'>
+                                    <Typography variant="caption"
+                                        style={{
+                                            color: '#a2a2a2',
+                                            float: 'right'
+                                        }}>
+                                        View all
+                                    </Typography>
+                                </Link>
+                            </Grid>
+                        </Fragment>
+                        ) : null
+                    }
                 </Grid>
             </Grid>
             <Grid item xs={12} md={12} lg={12}>

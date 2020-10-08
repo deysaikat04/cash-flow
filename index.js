@@ -29,9 +29,9 @@ app.use('/api/auth', user);
 // })
 
 //Serve static assets in production
-// app.use(function (req, res) {
-//     res.sendFile(path.join(__dirname, './client/build/index.html'));
-// });
+app.use(function (req, res) {
+    res.sendFile(path.join(__dirname, './client/build/index.html'));
+});
 
 
 const PORT = process.env.PORT || 5000;

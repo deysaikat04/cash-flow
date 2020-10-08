@@ -71,7 +71,6 @@ router.post('/login', async (req, res) => {
         let user = await User.findOne({ email });
 
 
-
         if (user) {
             const isMatch = await bcrypt.compare(pin, user.pin);
 
@@ -113,14 +112,16 @@ router.post('/login', async (req, res) => {
 router.get('/getUser', auth, async (req, res) => {
 
     const userId = req.user.id;
+    const token = req.sanitize(req.header('authorization'));
 
     try {
 
         let user = await User.findById(userId);
-
         if (user) {
-            return res.json({
-                id: user.id,
+            res.json({
+                token,
+                name: user.name,
+                email: user.email,
             });
         } else {
             return res
