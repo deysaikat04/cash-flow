@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -62,10 +62,13 @@ export default function BudgetForm(props) {
 
     const dispatch = useDispatch();
 
-    const { user } = useSelector(state => ({
-        user: state.user
+    const { user, budget } = useSelector(state => ({
+        user: state.user,
+        budget: state.budget
     }));
 
+    const [dbError, setDbError] = useState(false);
+    const [dbSuccess, setDbSuccess] = useState(false);
     const [amount, setAmount] = useState('');
     const [error, setError] = useState({ amount: false });
     const [alert, setAlert] = useState(false);
@@ -106,6 +109,7 @@ export default function BudgetForm(props) {
             default: break;
         }
     }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         validate('amount', amount);
@@ -116,7 +120,7 @@ export default function BudgetForm(props) {
                 month: month[new Date().getMonth()],
                 year: new Date().getFullYear(),
             }
-            dispatch(addBudget(localStorage.getItem('token'), data));
+            dispatch(addBudget(sessionStorage.getItem('token'), data));
             handleAlert();
             reset();
         }
@@ -128,16 +132,15 @@ export default function BudgetForm(props) {
         setError({ amount: false });
     }
 
+    useEffect(() => {
+        if (budget.error) setDbError(true);
+        if (budget.amount) setDbSuccess(true)
+    }, [budget])
+
     if (!user.isLoggedin) {
         return <Redirect to="/login" />;
     } else return (
-        <div className={classes.root}
-            style={{
-                // background: type === 'Income' ? (
-                //     theme ? 'linear-gradient( #dcedc8 60%, #ffffff)' : 'linear-gradient(#4f6f2938 60%, #303030)') : (
-                //         theme ? 'linear-gradient( #ffdcdc 60%, #ffffff)' : 'linear-gradient(#ef53501f 60%, #303030)'),
-                // marginBottom: multiple ? '48px' : '0px',
-            }}>
+        <div className={classes.root}>
             <CssBaseline />
             <AppBar position="static"
                 style={{
@@ -213,12 +216,26 @@ export default function BudgetForm(props) {
                     </Grid>
                 </Container>
             </main>
-            <Snackbar open={alert} autoHideDuration={2000} onClose={handleAlertClose}
-                style={{ marginBottom: '32px' }}>
-                <Alert onClose={handleAlertClose} severity={'success'}>
-                    Saved successfully!
+            {
+                dbError ? (
+                    <Snackbar open={alert} autoHideDuration={2000} onClose={handleAlertClose}
+                        style={{ marginBottom: '32px' }}>
+                        <Alert onClose={handleAlertClose} severity={'error'}>
+                            Oops! Some error occured.
                 </Alert>
-            </Snackbar>
+                    </Snackbar>
+                ) : null
+            }
+            {
+                dbSuccess ? (
+                    <Snackbar open={alert} autoHideDuration={2000} onClose={handleAlertClose}
+                        style={{ marginBottom: '32px' }}>
+                        <Alert onClose={handleAlertClose} severity={'success'}>
+                            Budget is saved successfully!
+                        </Alert>
+                    </Snackbar>
+                ) : null
+            }
         </div>
     )
 }
