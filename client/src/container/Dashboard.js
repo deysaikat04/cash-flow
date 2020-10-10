@@ -174,7 +174,7 @@ export default function Dashboard(props) {
                                         <Grid item xs={12} md={12} lg={12}>
                                             <Grid container spacing={1}>
 
-                                                <Budget transactions={expenses.items} budgetAmount={budget.amount} />
+                                                <Budget />
 
                                             </Grid>
                                         </Grid>

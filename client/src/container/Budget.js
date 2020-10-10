@@ -107,7 +107,7 @@ export default function Budget(props) {
 
     const calculateBudget = () => {
         var spentAmount = 0;
-        expenses.items.map(items => {
+        expenses.monthlyItems.map(items => {
             if (items.transactionType === 'Expense') {
                 spentAmount += items.amount;
             }
@@ -173,7 +173,7 @@ export default function Budget(props) {
                             </div>
                             {
                                 percentage !== 100 ? (
-                                    <div style={{ width: percentage + '%' }}>
+                                    <div style={{ width: percentage === 0 ? '5%' : percentage + '%', }}>
                                         <Typography variant='caption'
                                             style={{
                                                 float: 'right'
