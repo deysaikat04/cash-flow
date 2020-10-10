@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, Redirect } from 'react-router-dom';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -25,6 +25,11 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Chip from '@material-ui/core/Chip';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+    MuiPickersUtilsProvider,
+    KeyboardDatePicker,
+} from '@material-ui/pickers';
 
 import SettingsVoiceIcon from '@material-ui/icons/SettingsVoice';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
@@ -62,6 +67,11 @@ const useStyles = makeStyles((theme) => ({
     header: {
         textAlign: 'center'
     },
+    textField: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        width: 200,
+    },
 
 }));
 
@@ -97,7 +107,8 @@ export default function AddData(props) {
     const dispatch = useDispatch();
     // const state = dispatch(getExpenses());
 
-    const { user } = useSelector(state => ({
+    const { expenses, user } = useSelector(state => ({
+        expenses: state.expenses,
         user: state.user
     }));
 
@@ -105,6 +116,7 @@ export default function AddData(props) {
     const { theme } = props;
 
     const [transactionType, setTransactionType] = useState('Expense');
+    const [date, setDate] = useState(new Date().toString());
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
@@ -116,13 +128,25 @@ export default function AddData(props) {
     const [transactionMode, setTransactionMode] = useState('Cash');
     const [alert, setAlert] = useState(false);
 
+    const [dbError, setDbError] = useState(false);
+    const [dbSuccess, setDbSuccess] = useState(false);
+
     const [voicePressed, setVoicePressed] = useState(false);
 
     const { transcript, resetTranscript } = useSpeechRecognition();
+
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
         alert('Not working in this browser');
     }
 
+    useEffect(() => {
+        if (expenses.error) setDbError(true);
+        if (expenses.success) setDbSuccess(true);
+    }, [expenses]);
+
+    const handleDateChange = (date) => {
+        setDate(date);
+    };
 
     const handleMultiple = () => {
         setMultiple(!multiple);
@@ -207,28 +231,26 @@ export default function AddData(props) {
         if (!amount == '' && !category == '') {
             const data = {
                 year: new Date().getFullYear(),
-                monthName: month[new Date().getMonth()],
+                monthName: month[new Date(date).getMonth()],
                 transactionType,
                 amount: Number(amount),
                 description: description ? description : 'None',
                 category,
                 transactionMode,
-                createdAt: new Date().toDateString(),
-                userId: user.id
+                createdAt: new Date(date).toDateString(),
             }
             dispatch(addTransactions(sessionStorage.getItem('token'), data));
 
-            setFormMsg({
-                ...formMsg,
-                type: 'success',
-                msg: 'Transaction is successfully saved.'
-            });
         } else {
-            setFormMsg({
-                ...formMsg,
-                type: 'error',
-                msg: 'Error while saving!'
-            });
+            amount === '' ? (
+                setError({
+                    ...error,
+                    amount: true,
+                })
+            ) : setError({
+                ...error,
+                category: true,
+            })
         }
 
         handleAlert();
@@ -255,7 +277,7 @@ export default function AddData(props) {
         setDescription('');
         setCategory('');
         setMultipleAmount();
-        setError({ amount: false, category: false });
+        // setError({ amount: false, category: false });
         setMultiple(false);
         setMultipleAmount();
         resetTranscript();
@@ -273,10 +295,11 @@ export default function AddData(props) {
         setVoicePressed(!voicePressed);
     }
 
-    if (!user.isLoggedin) {
-        return <Redirect to="/login" />
+    // if (!user.isLoggedin) {
+    //     return <Redirect to="/login" />
 
-    } else return (
+    // } else return (
+    return (
         <div className={classes.root}
             style={{
                 background: transactionType === 'Income' ? (
@@ -373,19 +396,24 @@ export default function AddData(props) {
 
                             <form className={classes.form} onSubmit={handleSubmit}>
 
-                                <TextField
-                                    variant="outlined"
-                                    color="secondary"
-                                    margin="normal"
-                                    fullWidth
-                                    name="date"
-                                    label="Date"
-                                    id="date"
-                                    defaultValue={new Date().toDateString()}
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                />
+                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+
+                                    <KeyboardDatePicker
+                                        margin="normal"
+                                        id="date-picker-dialog"
+                                        label="Date"
+                                        format="dd MMMM yyyy"
+                                        value={date}
+                                        onChange={handleDateChange}
+                                        KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                        }}
+                                        style={{ width: '100%' }}
+                                        inputVariant="outlined"
+                                        maxDate={new Date()}
+                                    />
+                                </MuiPickersUtilsProvider>
+
                                 {multiple && transactionType === 'Expense' ? (
                                     <TextField
                                         variant="outlined"
@@ -412,7 +440,7 @@ export default function AddData(props) {
                                     margin="normal"
                                     fullWidth
                                     name="amount"
-                                    label="Amount"
+                                    label="Amount*"
                                     type="number"
                                     id="amount"
                                     autoComplete="amount"
@@ -461,7 +489,7 @@ export default function AddData(props) {
                                     <InputLabel
                                         htmlFor="outlined-category"
                                         color="secondary">
-                                        Category
+                                        Category*
                                         </InputLabel>
                                     <Select
                                         open={open}
@@ -514,20 +542,36 @@ export default function AddData(props) {
                     </Grid>
                 </Container>
             </main>
-            {
+            {/* {
                 formMsg.type ? (
                     <Snackbar open={alert} autoHideDuration={2000} onClose={handleAlertClose}
                         style={{ marginBottom: '32px' }}>
-                        <Alert onClose={handleAlertClose} severity={formMsg.type === 'error' ? 'error' : 'success'}>
+                        <Alert onClose={handleAlertClose} severity={formMsg.type}>
                             {formMsg.msg}
                         </Alert>
                     </Snackbar>
-                ) : <Snackbar open={alert} autoHideDuration={2000} onClose={handleAlertClose}
-                    style={{ marginBottom: '32px' }}>
-                        <Alert onClose={handleAlertClose} severity='error'>
-                            Please fill the fields first!
+                ) : null
+            } */}
+
+            {
+                dbError ? (
+                    <Snackbar open={alert} autoHideDuration={2000} onClose={handleAlertClose}
+                        style={{ marginBottom: '32px' }}>
+                        <Alert onClose={handleAlertClose} severity={'error'}>
+                            Oops! Some error occured.
+                </Alert>
+                    </Snackbar>
+                ) : null
+            }
+            {
+                dbSuccess ? (
+                    <Snackbar open={alert} autoHideDuration={2000} onClose={handleAlertClose}
+                        style={{ marginBottom: '32px' }}>
+                        <Alert onClose={handleAlertClose} severity={'success'}>
+                            Transaction is saved successfully!
                         </Alert>
                     </Snackbar>
+                ) : null
             }
         </div>
     )
