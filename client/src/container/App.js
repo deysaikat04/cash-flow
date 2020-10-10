@@ -35,7 +35,7 @@ export const dark = {
     type: 'dark',
     // type: 'dark',
     primary: {
-      main: '#344955',
+      main: '#7d888e',
       dark: '#212121',
     },
     secondary: {

@@ -4,7 +4,8 @@ const initState = {
     items: [],
     monthlyItems: [],
     groupedItems: {},
-    error: false
+    error: false,
+    success: false
 };
 
 export default function expenseReducer(state = initState, action) {
@@ -15,7 +16,8 @@ export default function expenseReducer(state = initState, action) {
                 items: [...action.payload],
                 loading: false,
                 inserted: false,
-                error: false
+                error: false,
+                success: false
             }
         case 'SET_EXPENSES':
             return {
@@ -23,28 +25,32 @@ export default function expenseReducer(state = initState, action) {
                 items: [...action.payload],
                 loading: false,
                 inserted: true,
-                error: false
+                error: false,
+                success: true
             }
         case 'SET_EXPENSES_MONTH':
             return {
                 ...state,
                 monthlyItems: [...action.payload],
                 loading: false,
-                error: false
+                error: false,
+                success: false
             }
         case 'GROUPED_EXPENSES':
             return {
                 ...state,
                 groupedItems: { ...action.payload },
                 loading: false,
-                error: false
+                error: false,
+                success: false
             }
         case 'EXPENSES_ERROR':
             return {
                 ...state,
                 loading: false,
                 inserted: false,
-                error: true
+                error: true,
+                success: false
             }
 
         default:
