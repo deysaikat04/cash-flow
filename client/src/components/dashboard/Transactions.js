@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Transactions(props) {
     const classes = useStyles();
-    const { showAll } = props;
+    const { showAll, monthName } = props;
 
     const { data } = props;
 
@@ -79,12 +79,14 @@ export default function Transactions(props) {
                                     data.length !== 0 ? (
                                         data.map((item, index) => {
                                             return <TransactionList key={index}
+                                                id={item._id}
                                                 amount={item.amount}
                                                 createdAt={item.createdAt}
                                                 description={item.description}
                                                 transactionMode={item.transactionMode}
                                                 transactionType={item.transactionType}
                                                 category={item.category}
+                                                monthName={monthName}
                                             />
                                         })
                                     ) : (

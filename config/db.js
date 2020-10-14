@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
-const db = "mongodb+srv://sd123:sd123@cashflow.szgd0.mongodb.net/expensedb?retryWrites=true&w=majority";
-
+// const db = "mongodb+srv://sd123:sd123@cashflow.szgd0.mongodb.net/expensedb?retryWrites=true&w=majority";
+const db = "mongodb://localhost:27017/cashflow_DB";
 const conenctDB = async () => {
     try {
         await mongoose.connect(db, {

@@ -102,7 +102,7 @@ export default function TransactionView() {
 
                         <Grid item xs={12} md={12} lg={12}>
                             <Grid container>
-                                <Transactions showAll={true} data={value} />
+                                <Transactions showAll={true} data={value} monthName={key} />
                             </Grid>
                         </Grid>
                     </Fragment>
