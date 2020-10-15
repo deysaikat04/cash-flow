@@ -21,32 +21,55 @@ _id: 0, months: 1
 db.expenses.find(
             {
                 $and: [
-                    { userId:'U100' },
+                    { userId:'5f7b336bd02de811a482ffc8' },
                     { year: 2020 },
-                    { 'months.monthName': "September" }
+                    {
+                        "months": {
+                            "$elemMatch": {
+                                "monthName": "October"
+                            }
+                        }
+                    }
                 ]
             }
         );
-
-db.expenses.aggregate([
-    {$unwind: '$months' },
+        
+//to find a transaction
+db.expenses.aggregate(
+    {"$unwind": "$months"},
+    {"$unwind": "$months.transactions"},
     {$match: {
         $and:[
-            {userId: '5f718feff88c9a140421acb1'}
+            {userId: '5f7b336bd02de811a482ffc8'},
+            {"months.monthName": "October"},
+            {"months.transactions._id" : ObjectId("5f7f4a7d1eb98e1fb818069b")}
         ]
     }},
-    {$project: {'months':1,_id:0}}
-])
+    {"$project" : {"months.transactions" : 1}},
+    {"$group":{"_id":"$months.transactions"}}
+)
+
+db.expenses.update(
+  {
+        $and: [
+            { userId: '5f7b336bd02de811a482ffc8' },
+            {"months.monthName": 'October'},
+            { year: 2020 }
+        ]
+    },
+  {$pull : {"months.$.transactions" : {"_id": ObjectId("5f7cb3bbbadcaf18505e0d19")}}}
+)
+
 
 db.expenses.find(
     {
         $and: [
-            { userId: '5f718feff88c9a140421acb1' },
+            { userId: '5f7b336bd02de811a482ffc8' },
+            {"months.monthName": 'October'},
             { year: 2020 }
         ]
     }
 )
-db.inventory.find()
 
 
 

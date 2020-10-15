@@ -33,7 +33,6 @@ import {
 
 import SettingsVoiceIcon from '@material-ui/icons/SettingsVoice';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-
 import { addTransactions } from '../actions/expenseAction';
 
 function Alert(props) {
@@ -107,13 +106,18 @@ export default function AddData(props) {
     const dispatch = useDispatch();
     // const state = dispatch(getExpenses());
 
-    const { expenses, user } = useSelector(state => ({
+    const { expenses, user, budget } = useSelector(state => ({
         expenses: state.expenses,
-        user: state.user
+        user: state.user,
+        budget: state.budget
     }));
 
     const { month } = props;
     const { theme } = props;
+
+    const [data, setData] = useState([]);
+    const [totalExpenses, setExpenses] = useState(0);
+    const [budgetAmount, setBudgetAmount] = useState(0);
 
     const [transactionType, setTransactionType] = useState('Expense');
     const [date, setDate] = useState(new Date().toString());
@@ -122,7 +126,7 @@ export default function AddData(props) {
     const [description, setDescription] = useState('');
     const [open, setOpen] = useState(false);
     const [error, setError] = useState({ amount: false, category: false });
-    const [formMsg, setFormMsg] = useState({ type: '', msg: '' });
+    const [multipleAmountErr, setMultipleAmountErr] = useState({ multiple: false });
     const [multiple, setMultiple] = useState(false);
     const [multipleAmount, setMultipleAmount] = useState();
     const [transactionMode, setTransactionMode] = useState('Cash');
@@ -140,9 +144,31 @@ export default function AddData(props) {
     }
 
     useEffect(() => {
+        console.log(expenses)
         if (expenses.error) setDbError(true);
         if (expenses.success) setDbSuccess(true);
     }, [expenses]);
+
+    useEffect(() => {
+        if (expenses.monthlyItems) {
+            setData(expenses.monthlyItems);
+            calculate();
+        }
+        if (budget) {
+            setBudgetAmount(budget.amount);
+        }
+    }, [expenses, budget]);
+
+    const calculate = () => {
+        var expense = 0;
+        expenses.monthlyItems.map(elem => {
+            if (elem.transactionType === 'Expense') {
+                expense += elem.amount;
+            }
+        });
+        setExpenses(expense);
+        return null;
+    }
 
     const handleDateChange = (date) => {
         setDate(date);
@@ -172,7 +198,10 @@ export default function AddData(props) {
         const { name, value } = event.target;
         validate(name, value);
     };
+    const handleMultipleAmount = (event) => {
+        const { value } = event.target;
 
+    }
     const handleDescChange = event => {
         const { value } = event.target;
         if (transcript) {
@@ -259,17 +288,28 @@ export default function AddData(props) {
     }
 
     const addMultiple = e => {
-        var code = (e.keyCode ? e.keyCode : e.which);
-        var amountArr = [];
-        if (code === 13 || code === 32) { //Enter or Space keycode
-            var toSplit = code === 13 ? '\n' : ' ';
-            amountArr = multipleAmount.split(toSplit);
-            var sum = amountArr.reduce(function (a, b) {
-                return Number(a) + Number(b);
-            }, 0);
-
-            setAmount(sum);
+        const value = e.target.value;
+        console.log(value.match(/^[a-zA-Z]*$/))
+        if (value.match(/^[a-zA-Z]+$/)) {
+            value = value.replace(/\D/g, ' ');
+            console.log(value)
+            setMultipleAmountErr({ ...multipleAmountErr, multiple: true });
+        } else {
+            setMultipleAmountErr({ ...multipleAmountErr, multiple: false });
         }
+        setMultipleAmount(value);
+
+        // var code = (e.keyCode ? e.keyCode : e.which);
+        // var amountArr = [];
+        // if (code === 13 || code === 32) { //Enter or Space keycode
+        //     var toSplit = code === 13 ? '\n' : ' ';
+        //     amountArr = multipleAmount.split(toSplit);
+        //     var sum = amountArr.reduce(function (a, b) {
+        //         return Number(a) + Number(b);
+        //     }, 0);
+
+        //     setAmount(sum);
+        // }
     }
 
     const reset = () => {
@@ -279,7 +319,6 @@ export default function AddData(props) {
         setMultipleAmount();
         // setError({ amount: false, category: false });
         setMultiple(false);
-        setMultipleAmount();
         resetTranscript();
         setVoicePressed(false);
         setTransactionMode('Cash');
@@ -323,11 +362,18 @@ export default function AddData(props) {
                         Add Transaction
                     </Typography>
 
+
                 </Toolbar>
             </AppBar>
             <main>
                 <Container maxWidth="lg" className={classes.container}>
                     <Grid container spacing={1}>
+                        <Grid item xs={12} md={12} sm={12} >
+                            <Typography variant="caption" className={classes.title}>
+                                Expenses: {totalExpenses}
+                                BUdget: {budgetAmount}
+                            </Typography>
+                        </Grid>
                         <Grid item xs={12} md={12} sm={12} >
                             <Typography variant="body1">Type: </Typography>
                             <FormControl component="fieldset">
@@ -387,6 +433,18 @@ export default function AddData(props) {
                                             name="Card"
                                             onClick={() => handleClick('Card')}
                                         />
+                                        <Chip
+                                            variant="outlined"
+                                            style={{
+                                                backgroundColor: transactionMode === 'UPI' ? '#f9aa33' : null,
+                                                marginRight: '16px',
+                                                padding: '10px'
+                                            }}
+                                            size="small"
+                                            label="UPI"
+                                            name="UPI"
+                                            onClick={() => handleClick('UPI')}
+                                        />
                                     </Grid>
                                 </Fragment>
                             ) : <div></div>
@@ -430,8 +488,9 @@ export default function AddData(props) {
                                         rows={2}
                                         value={multipleAmount}
                                         onChange={(e) => setMultipleAmount(e.target.value)}
-                                        onKeyDown={addMultiple}
+                                        onKeyUp={addMultiple}
                                         helperText="Press enter after each amounts."
+                                        {...(multipleAmountErr.multiple && { multipleAmountErr: true, helperText: 'Please input only numbers.' })}
                                     />
                                 ) : <></>}
                                 <TextField
@@ -445,7 +504,6 @@ export default function AddData(props) {
                                     id="amount"
                                     autoComplete="amount"
                                     placeholder="0"
-
                                     InputProps={{
                                         startAdornment: <InputAdornment position="start">₹</InputAdornment>,
                                         readOnly: multiple ? true : false,
@@ -542,16 +600,6 @@ export default function AddData(props) {
                     </Grid>
                 </Container>
             </main>
-            {/* {
-                formMsg.type ? (
-                    <Snackbar open={alert} autoHideDuration={2000} onClose={handleAlertClose}
-                        style={{ marginBottom: '32px' }}>
-                        <Alert onClose={handleAlertClose} severity={formMsg.type}>
-                            {formMsg.msg}
-                        </Alert>
-                    </Snackbar>
-                ) : null
-            } */}
 
             {
                 dbError ? (

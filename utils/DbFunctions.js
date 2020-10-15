@@ -89,6 +89,19 @@ async function getAllTransactionByUser(userId) {
     return transactions;
 }
 
+async function updateTransaction(userId, transactionId, monthName, year) {
+    let updated = await Expense.updateOne(
+        {
+            $and: [
+                { userId },
+                { "months.monthName": monthName },
+                { year }
+            ]
+        },
+        { $pull: { "months.$.transactions": { "_id": transactionId } } }
+    );
+    return updated;
+}
 //------------ budget -------------------
 
 //update
@@ -132,5 +145,6 @@ module.exports = {
     pushNewTransaction,
     getAllTransactionByUser,
     updateBudget,
-    getBudgetByMonth
+    getBudgetByMonth,
+    updateTransaction
 }

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -6,6 +7,36 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import Chip from '@material-ui/core/Chip';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import { updateTransaction } from '../../actions/expenseAction';
+
+
+const expenseCategoryArray = [
+    "Others",
+    "Groceries",
+    "Shopping",
+    "Medical",
+    "Bill",
+    "Food",
+    "Travel"
+];
+
+const incomeCategoryArray = [
+    "Others",
+    "Salary"
+];
 
 const useStyles = makeStyles((theme) => ({
     itemExpense: {
@@ -32,23 +63,133 @@ const useStyles = makeStyles((theme) => ({
         width: 30,
         opacity: '0.6'
     },
+    formControl: {
+        margin: theme.spacing(2, 0),
+        width: '100%',
+    },
 }));
 
 export default function TransactionList(props) {
     const classes = useStyles();
-    const { transactionType, amount, category, description, transactionMode, createdAt } = props;
+    const dispatch = useDispatch();
 
+    const { id, transactionType, amount, category, description, transactionMode, createdAt, monthName } = props;
 
+    const [open, setOpen] = useState(false);
+    const [select, setSelect] = useState(false);
+    const [updatedAmount, setUpdatedAmount] = useState(amount.toString());
+    const [updatedCategory, setUpdatedCategory] = useState(category);
+    const [updatedDescription, setUpdatedDescription] = useState(description);
+    const [updatedTransactionMode, setUpdatedTransactionMode] = useState(transactionMode);
+    const [error, setError] = useState({ amount: false, category: false });
+    const handleDialogOpen = () => {
+        setOpen(true);
+    };
+
+    const handleDialogClose = () => {
+        setOpen(false);
+    };
+    const handleSelectClose = () => {
+        setSelect(false);
+    };
+
+    const handleSelectOpen = () => {
+        setSelect(true);
+    };
+
+    const handleTransactionMode = (type) => {
+        setUpdatedTransactionMode(type);
+    }
+
+    const handleChange = event => {
+        const { name, value } = event.target;
+        validate(name, value);
+    };
+
+    const validate = (name, value) => {
+        switch (name) {
+            case 'amount':
+                setUpdatedAmount(value);
+                if (value === '') {
+                    setError({
+                        ...error,
+                        amount: true
+                    })
+                } else {
+                    setError({
+                        ...error,
+                        amount: false
+                    })
+                }
+                break;
+
+            case 'category':
+                setUpdatedCategory(value);
+                if (value === '') {
+                    setError({
+                        ...error,
+                        category: true
+                    })
+                } else {
+                    setError({
+                        ...error,
+                        category: false
+                    })
+                }
+                break;
+
+            case 'description':
+                setUpdatedDescription(value);
+                break;
+            default: break;
+        }
+    }
+
+    const updatetransaction = () => {
+        console.log(sessionStorage.getItem('token'));
+        if (!updatedAmount == '' && !updatedCategory == '') {
+            const data = {
+                year: Number(createdAt.slice(-4)),
+                amount: Number(updatedAmount),
+                description: updatedDescription,
+                category: updatedCategory,
+                transactionMode: updatedTransactionMode,
+                monthName,
+                transactionType,
+                createdAt,
+                id
+            }
+            dispatch(updateTransaction(sessionStorage.getItem('token'), data));
+            // console.log(data);
+
+        } else {
+            amount === '' ? (
+                setError({
+                    ...error,
+                    amount: true,
+                })
+            ) : setError({
+                ...error,
+                category: true,
+            })
+        }
+        handleDialogClose();
+    }
 
     return (
         <React.Fragment>
             <ListItem className={
                 transactionType === 'Income' ? classes.itemIncome : classes.itemExpense
-            }>
+            } onClick={handleDialogOpen}>
                 <ListItemAvatar>
-                    {transactionMode === 'Card' ? (
-                        <img src='./img/credit-card.svg' className={classes.image} alt="card" />
-                    ) : <img src='./img/money.svg' className={classes.image} alt="cash" />
+                    {
+                        transactionMode === 'Card' ? (
+                            <img src='./img/credit-card.svg' className={classes.image} alt="card" />
+                        ) : (
+                                transactionMode === 'Cash' ? (
+                                    <img src='./img/money.svg' className={classes.image} alt="cash" />
+                                ) : <img src='./img/upi-icon.svg' className={classes.image} alt="upi" />
+                            )
                     }
                 </ListItemAvatar>
                 <ListItemText
@@ -64,6 +205,162 @@ export default function TransactionList(props) {
                     </Typography>
                 </ListItemSecondaryAction>
             </ListItem>
+
+            <Dialog
+                open={open}
+                onClose={handleDialogClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                {/* <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle> */}
+                <DialogContent>
+                    <Container maxWidth="lg" className={classes.container}>
+                        <Grid container spacing={1}>
+
+                            <Grid item xs={12} md={12} lg={12}>
+                                <Typography variant="body1">
+                                    Edit: {createdAt}
+                                </Typography>
+                            </Grid>
+
+                            <Grid item xs={12} md={12} lg={12}>
+                                <DialogContentText id="alert-dialog-description">
+                                    {transactionType}
+                                </DialogContentText>
+                            </Grid>
+
+                            {
+                                transactionType === 'Expense' ? (
+                                    <Grid item xs={12} md={12} lg={12}>
+                                        <Chip
+                                            variant="outlined"
+                                            size="small"
+                                            label="Cash"
+                                            name="Cash"
+                                            onClick={() => handleTransactionMode('Cash')}
+                                            style={{
+                                                backgroundColor: updatedTransactionMode === 'Cash' ? '#f9aa33' : null,
+                                                marginRight: '8px',
+                                                padding: '10px'
+                                            }}
+                                        />
+                                        <Chip
+                                            variant="outlined"
+                                            style={{
+                                                backgroundColor: updatedTransactionMode === 'Card' ? '#f9aa33' : null,
+                                                marginRight: '16px',
+                                                padding: '10px'
+                                            }}
+                                            size="small"
+                                            label="Card"
+                                            name="Card"
+                                            onClick={() => handleTransactionMode('Card')}
+                                        />
+                                        <Chip
+                                            variant="outlined"
+                                            style={{
+                                                backgroundColor: updatedTransactionMode === 'UPI' ? '#f9aa33' : null,
+                                                marginRight: '16px',
+                                                padding: '10px'
+                                            }}
+                                            size="small"
+                                            label="UPI"
+                                            name="UPI"
+                                            onClick={() => handleTransactionMode('UPI')}
+                                        />
+                                    </Grid>
+
+                                ) : null
+                            }
+
+                            <Grid item xs={12} md={12} lg={12}>
+                                <TextField
+                                    autoFocus
+                                    color="secondary"
+                                    variant="outlined"
+                                    margin="dense"
+                                    id="amount"
+                                    name="amount"
+                                    label="Amount*"
+                                    value={updatedAmount}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    {...(error.amount && { error: true, helperText: 'This field is required.' })}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={12} lg={12}>
+                                <TextField
+                                    autoFocus
+                                    color="secondary"
+                                    variant="outlined"
+                                    margin="dense"
+                                    id="description"
+                                    name="description"
+                                    label="Description"
+                                    value={updatedDescription}
+                                    onChange={handleChange}
+                                    fullWidth
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={12} lg={12}>
+                                <FormControl variant="outlined" className={classes.formControl}>
+                                    <InputLabel
+                                        htmlFor="outlined-category"
+                                        color="secondary">
+                                        Category*
+                                        </InputLabel>
+                                    <Select
+                                        margin="dense"
+                                        open={select}
+                                        onClose={handleSelectClose}
+                                        onOpen={handleSelectOpen}
+                                        value={updatedCategory}
+                                        onChange={handleChange}
+                                        label="Category"
+                                        color="secondary"
+                                        inputProps={{
+                                            name: 'category',
+                                            id: 'outlined-category',
+                                        }}
+                                        {...(error.category && { error: true, helperText: 'This field is required.' })}
+                                    >
+                                        {
+                                            transactionType === 'Expense' ? (
+                                                expenseCategoryArray.map(name => {
+                                                    return (
+                                                        <MenuItem value={name} key={name}>{name}</MenuItem>
+                                                    )
+                                                })
+                                            ) : (
+                                                    incomeCategoryArray.map(name => {
+                                                        return (
+                                                            <MenuItem value={name} key={name}>{name}</MenuItem >
+                                                        )
+                                                    })
+                                                )
+                                        }
+
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
+                        </Grid>
+                    </Container>
+
+
+
+                </DialogContent>
+                <DialogActions>
+                    <Button color="secondary" autoFocus onClick={updatetransaction}>
+                        Update
+                                    </Button>
+                    <Button onClick={handleDialogClose} autoFocus>
+                        Cancel
+                                </Button>
+                </DialogActions>
+            </Dialog>
 
         </React.Fragment>
     );

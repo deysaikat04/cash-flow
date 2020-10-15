@@ -154,7 +154,7 @@ export default function Dashboard(props) {
 
                                         <Grid item xs={12} md={12} lg={12}>
                                             <Grid container>
-                                                <Transactions showAll={false} data={expenses.monthlyItems.slice(0, 4)} />
+                                                <Transactions showAll={false} data={expenses.monthlyItems.slice(0, 4)} monthName={month[new Date().getMonth()]} />
                                             </Grid>
                                         </Grid>
 

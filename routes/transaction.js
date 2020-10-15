@@ -11,7 +11,8 @@ const { expenseExistByUser,
     pushNewTransaction,
     getAllTransactionByUser,
     updateBudget,
-    getBudgetByMonth
+    getBudgetByMonth,
+    updateTransaction
 } = require('../utils/DbFunctions');
 const auth = require('../middleware/auth');
 
@@ -108,6 +109,51 @@ router.post('/add', auth, async (req, res) => {
     }
 });
 
+router.post('/update', auth, async (req, res) => {
+
+    const { id, transactionType, amount, description, category, transactionMode, createdAt, monthName, year } = req.body;
+    const userId = req.user.id;
+
+    const transactions = {
+        transactionType,
+        amount,
+        description,
+        category,
+        transactionMode,
+        createdAt
+    };
+
+    const month = {
+        monthName,
+        transactions: transactions
+    };
+
+    const expense = new Expense({
+        userId,
+        year,
+        months: month
+    });
+
+
+    try {
+
+        let expenseExists = await updateTransaction(userId, id, monthName, year);
+
+        //checking if document for a user is already created
+        if (expenseExists.nModified == 1) {
+            let updateData = await pushInExistingMonth(userId, monthName, transactions);
+            if (updateData) {
+                var TransactionArr = await getTransactionsByMonth(userId, monthName);
+                res.json(TransactionArr.reverse());
+            } else {
+                res.status(500).send('Server Error');
+            }
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
 
 //get expense details by user
 router.get('/all', auth, async (req, res) => {
@@ -115,15 +161,9 @@ router.get('/all', auth, async (req, res) => {
 
     try {
         //check if user exists
-        let userExists = await Expense.findOne(
-            {
-                $and: [
-                    { userId },
-                    { year: new Date().getFullYear() }
-                ]
-            }
-        );
-        if (!userExists) {
+        let expenseExists = await expenseExistByUser(userId);
+
+        if (!expenseExists) {
             res.json([]);
         } else {
 

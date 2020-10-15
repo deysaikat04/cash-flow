@@ -50,6 +50,31 @@ export function getAllTransactions(token) {
     }
 }
 
+export function updateTransaction(token, data) {
+
+    return dispatch => {
+        let url = `/api/transactions/update`;
+        axios.post(url, data,
+            {
+                headers: {
+                    'authorization': token,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => {
+                dispatch(allExpenses(res.data));
+            })
+            .catch(err => {
+                if (err.response) {
+                    dispatch(expensesError(err.response.data.message));
+                } else {
+                    dispatch(expensesError(err.message));
+                }
+            })
+    }
+}
+
 export function getTransactionsByGrouped(token) {
 
     return dispatch => {
