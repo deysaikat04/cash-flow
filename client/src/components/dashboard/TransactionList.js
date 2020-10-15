@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -11,6 +11,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
@@ -20,8 +21,9 @@ import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import { updateTransaction } from '../../actions/expenseAction';
-
+import { getAllTransactions, deleteTransaction, updateTransaction, getTransactionsByGrouped, getMonthsTransactions } from '../../actions/expenseAction';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 const expenseCategoryArray = [
     "Others",
@@ -37,6 +39,7 @@ const incomeCategoryArray = [
     "Others",
     "Salary"
 ];
+
 
 const useStyles = makeStyles((theme) => ({
     itemExpense: {
@@ -67,6 +70,12 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(2, 0),
         width: '100%',
     },
+    closeButton: {
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+        color: theme.palette.grey[500],
+    },
 }));
 
 export default function TransactionList(props) {
@@ -82,6 +91,7 @@ export default function TransactionList(props) {
     const [updatedDescription, setUpdatedDescription] = useState(description);
     const [updatedTransactionMode, setUpdatedTransactionMode] = useState(transactionMode);
     const [error, setError] = useState({ amount: false, category: false });
+
     const handleDialogOpen = () => {
         setOpen(true);
     };
@@ -146,8 +156,8 @@ export default function TransactionList(props) {
     }
 
     const updatetransaction = () => {
-        console.log(sessionStorage.getItem('token'));
         if (!updatedAmount == '' && !updatedCategory == '') {
+            let token = sessionStorage.getItem('token');
             const data = {
                 year: Number(createdAt.slice(-4)),
                 amount: Number(updatedAmount),
@@ -158,9 +168,10 @@ export default function TransactionList(props) {
                 transactionType,
                 createdAt,
                 id
-            }
-            dispatch(updateTransaction(sessionStorage.getItem('token'), data));
-            // console.log(data);
+            };
+            dispatch(updateTransaction(token, data));
+            dispatch(getTransactionsByGrouped(token));
+            dispatch(getMonthsTransactions(token, monthName));
 
         } else {
             amount === '' ? (
@@ -175,6 +186,22 @@ export default function TransactionList(props) {
         }
         handleDialogClose();
     }
+
+    const deleteItem = () => {
+        let token = sessionStorage.getItem('token');
+        const data = {
+            year: Number(createdAt.slice(-4)),
+            monthName,
+            id
+        };
+        dispatch(deleteTransaction(token, data));
+        handleDialogClose();
+
+        dispatch(getAllTransactions(token));
+        dispatch(getTransactionsByGrouped(token));
+        dispatch(getMonthsTransactions(token, monthName));
+    }
+
 
     return (
         <React.Fragment>
@@ -212,14 +239,19 @@ export default function TransactionList(props) {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                {/* <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle> */}
+                <DialogTitle id="alert-dialog-title">
+                    Edit
+                    <IconButton aria-label="close" className={classes.closeButton} onClick={handleDialogClose}>
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
                 <DialogContent>
                     <Container maxWidth="lg" className={classes.container}>
                         <Grid container spacing={1}>
 
                             <Grid item xs={12} md={12} lg={12}>
                                 <Typography variant="body1">
-                                    Edit: {createdAt}
+                                    {createdAt}
                                 </Typography>
                             </Grid>
 
@@ -356,8 +388,8 @@ export default function TransactionList(props) {
                     <Button color="secondary" autoFocus onClick={updatetransaction}>
                         Update
                                     </Button>
-                    <Button onClick={handleDialogClose} autoFocus>
-                        Cancel
+                    <Button onClick={deleteItem} autoFocus>
+                        Delete
                                 </Button>
                 </DialogActions>
             </Dialog>
