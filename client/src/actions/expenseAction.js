@@ -127,6 +127,31 @@ export function addTransactions(token, data) {
     }
 }
 
+export function deleteTransaction(token, data) {
+
+    return dispatch => {
+        let url = `/api/transactions/remove/${data.id}/${data.monthName}/${data.year}`;
+        axios.delete(url,
+            {
+                headers: {
+                    'authorization': token,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => {
+                // dispatch(allExpenses(res.data));
+                console.log(res)
+            })
+            .catch(err => {
+                if (err.response) {
+                    dispatch(expensesError(err.response.data.message));
+                } else {
+                    dispatch(expensesError(err.message));
+                }
+            })
+    }
+}
 
 export const allExpenses = (data) => {
     return {

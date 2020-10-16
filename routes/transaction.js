@@ -155,6 +155,26 @@ router.post('/update', auth, async (req, res) => {
     }
 });
 
+router.delete('/remove/:id/:month/:year', auth, async (req, res) => {
+
+    const { id, month, year } = req.params;
+    const userId = req.user.id;
+
+    try {
+
+        let expenseExists = await updateTransaction(userId, id, month, year);
+
+        //checking if document for a user is already created
+        if (expenseExists.nModified == 1) {
+            res.json({ data: { message: "Deleted successfully!" } });
+
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 //get expense details by user
 router.get('/all', auth, async (req, res) => {
     const userId = req.user.id;

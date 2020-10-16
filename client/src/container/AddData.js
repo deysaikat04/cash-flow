@@ -371,7 +371,7 @@ export default function AddData(props) {
                         <Grid item xs={12} md={12} sm={12} >
                             <Typography variant="caption" className={classes.title}>
                                 Expenses: {totalExpenses}
-                                BUdget: {budgetAmount}
+                                Budget: {budgetAmount}
                             </Typography>
                         </Grid>
                         <Grid item xs={12} md={12} sm={12} >
