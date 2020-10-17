@@ -6,7 +6,7 @@ config/default.json
 config/db.js
 /.pnp
 .pnp.js
-
+Scrapbook-1.mongo
 # testing
 /coverage
 
