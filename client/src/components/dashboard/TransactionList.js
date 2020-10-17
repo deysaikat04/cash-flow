@@ -258,8 +258,7 @@ export default function TransactionList(props) {
 
                             <Grid item xs={12} md={12} lg={12}>
                                 <Typography variant="body1">
-                                    {/* {createdAt}  */}
-                                    {id}
+                                    {createdAt} 
                                 </Typography>
                             </Grid>
 
