@@ -9,6 +9,7 @@ import { ThemeProvider } from '@material-ui/core';
 import TransactionView from './TransactionView';
 import BudgetForm from './BudgetForm';
 import Login from './Login';
+import LoadingPage from '../components/LoadingPage';
 
 import { savedUser } from '../actions/userAction';
 import Register from './Register';
@@ -58,6 +59,7 @@ function App() {
 
   useEffect(() => {
     if (token && token != 'undefined') {
+      setIsLoggedIn(true);
       dispatch(savedUser(token));
     }
   }, [token]);
@@ -81,6 +83,9 @@ function App() {
       <ThemeProvider theme={appliedTheme}>
         <Router>
           <Switch>
+
+            {/* <Route exact path='/' render={() => <LoadingPage isloggedIn={isloggedIn} />}/> */}
+
             <Route exact path='/' render={() => isloggedIn ? <Redirect to='/dashboard' /> : <Redirect to='/login' />}
             />
 
@@ -96,6 +101,7 @@ function App() {
               theme={theme}
               checkIfLoggedIn={checkIfLoggedIn}
             />} />
+
             <Route exact path='/dashboard' render={(props) => <Dashboard {...props}
               theme={theme} month={month} isloggedIn={isloggedIn} />} />
 

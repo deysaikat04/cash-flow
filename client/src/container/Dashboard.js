@@ -16,7 +16,7 @@ import Transactions from '../components/dashboard/Transactions';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { getAllTransactions, getMonthsTransactions, getTransactionsByGrouped } from '../actions/expenseAction';
 import { getBudget } from '../actions/budgetAction';
-
+import LoadingPage from '../components/LoadingPage';
 
 function Copyright() {
     return (
@@ -115,7 +115,6 @@ export default function Dashboard(props) {
     }, [token]);
 
 
-
     if (!isloggedIn) {
         return <Redirect to='/login' />
     } else {
@@ -131,7 +130,7 @@ export default function Dashboard(props) {
                 <div className={classes.appBarSpacer} />
                 {
                     expenses && expenses.loading ? (
-                        <LinearProgress color="secondary" />
+                        <LoadingPage />
                     ) : (
                             <Fragment>
 
