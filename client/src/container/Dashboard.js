@@ -100,6 +100,7 @@ export default function Dashboard(props) {
         user: state.user
     }));
 
+
     useEffect(() => {
         setTimeout(() => {
             setToken(sessionStorage.getItem('token'));

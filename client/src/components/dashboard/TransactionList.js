@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -94,9 +94,6 @@ export default function TransactionList(props) {
     const [updatedTransactionMode, setUpdatedTransactionMode] = useState(transactionMode);
     const [error, setError] = useState({ amount: false, category: false });
 
-    useEffect(() => {
-        console.log("Here")
-    }, [props])
     const handleDialogOpen = () => {
         setOpen(true);
         setSelect(false);

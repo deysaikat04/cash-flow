@@ -78,7 +78,6 @@ export default function Transactions(props) {
                                 {
                                     data.length !== 0 ? (
                                         data.map((item, index) => {
-                                            console.log(item);
                                             return <TransactionList key={index}
                                                 id={item._id}
                                                 amount={item.amount}
