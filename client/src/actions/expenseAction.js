@@ -140,8 +140,7 @@ export function deleteTransaction(token, data) {
                 }
             })
             .then(res => {
-                // dispatch(allExpenses(res.data));
-                console.log(res)
+                dispatch(allExpenses(res.data));
             })
             .catch(err => {
                 if (err.response) {

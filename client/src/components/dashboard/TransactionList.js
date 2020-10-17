@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '5px',
         borderLeft: '4px solid #ef5350',
         boxShadow: '0px 2px 5px 0px rgba(0,0,0,0.2)',
+        cursor: 'pointer',
     },
     itemIncome: {
         marginBottom: theme.spacing(1),
@@ -55,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '5px',
         borderLeft: '4px solid #66bb6a',
         boxShadow: '0px 2px 5px 0px rgba(0,0,0,0.2)',
+        cursor: 'pointer',
     },
     avatarExpense: {
         background: '#ef9a9a94'
@@ -92,8 +94,16 @@ export default function TransactionList(props) {
     const [updatedTransactionMode, setUpdatedTransactionMode] = useState(transactionMode);
     const [error, setError] = useState({ amount: false, category: false });
 
+    useEffect(() => {
+        console.log("Here")
+    }, [props])
     const handleDialogOpen = () => {
         setOpen(true);
+        setSelect(false);
+        setUpdatedAmount(amount.toString());
+        setUpdatedCategory(category);
+        setUpdatedDescription(description);
+        setUpdatedTransactionMode(transactionMode);
     };
 
     const handleDialogClose = () => {
@@ -200,8 +210,8 @@ export default function TransactionList(props) {
         dispatch(getAllTransactions(token));
         dispatch(getTransactionsByGrouped(token));
         dispatch(getMonthsTransactions(token, monthName));
-    }
 
+    }
 
     return (
         <React.Fragment>
@@ -251,7 +261,8 @@ export default function TransactionList(props) {
 
                             <Grid item xs={12} md={12} lg={12}>
                                 <Typography variant="body1">
-                                    {createdAt}
+                                    {/* {createdAt}  */}
+                                    {id}
                                 </Typography>
                             </Grid>
 
