@@ -144,7 +144,6 @@ export default function AddData(props) {
     }
 
     useEffect(() => {
-        console.log(expenses)
         if (expenses.error) setDbError(true);
         if (expenses.success) setDbSuccess(true);
     }, [expenses]);
@@ -289,27 +288,25 @@ export default function AddData(props) {
 
     const addMultiple = e => {
         const value = e.target.value;
-        console.log(value.match(/^[a-zA-Z]*$/))
-        if (value.match(/^[a-zA-Z]+$/)) {
-            value = value.replace(/\D/g, ' ');
-            console.log(value)
-            setMultipleAmountErr({ ...multipleAmountErr, multiple: true });
-        } else {
-            setMultipleAmountErr({ ...multipleAmountErr, multiple: false });
+
+        var code = (e.keyCode ? e.keyCode : e.which);
+
+        var amountArr = [];
+        if (code === 13 || code === 32) { //Enter or Space keycode
+            var toSplit = code === 13 ? '\n' : ' ';
+            amountArr = multipleAmount.split(toSplit);
+            amountArr = amountArr.filter(number => {
+                if (!isNaN(number)) {
+                    return number;
+                }
+            })
+            console.log(amountArr)
+            var sum = amountArr.reduce(function (a, b) {
+                return Number(a) + Number(b);
+            }, 0);
+
+            setAmount(sum);
         }
-        setMultipleAmount(value);
-
-        // var code = (e.keyCode ? e.keyCode : e.which);
-        // var amountArr = [];
-        // if (code === 13 || code === 32) { //Enter or Space keycode
-        //     var toSplit = code === 13 ? '\n' : ' ';
-        //     amountArr = multipleAmount.split(toSplit);
-        //     var sum = amountArr.reduce(function (a, b) {
-        //         return Number(a) + Number(b);
-        //     }, 0);
-
-        //     setAmount(sum);
-        // }
     }
 
     const reset = () => {
@@ -334,10 +331,6 @@ export default function AddData(props) {
         setVoicePressed(!voicePressed);
     }
 
-    // if (!user.isLoggedin) {
-    //     return <Redirect to="/login" />
-
-    // } else return (
     return (
         <div className={classes.root}
             style={{
