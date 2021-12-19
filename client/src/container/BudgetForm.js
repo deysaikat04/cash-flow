@@ -65,7 +65,7 @@ export default function BudgetForm(props) {
 
   const [dbError, setDbError] = useState(false);
   const [dbSuccess, setDbSuccess] = useState(false);
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState(budget.amount || '');
   const [error, setError] = useState({ amount: false });
   const [alert, setAlert] = useState(false);
 

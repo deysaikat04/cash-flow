@@ -78,7 +78,6 @@ export default function TransactionView({ userid }) {
     }),
     shallowEqual
   );
-
   useEffect(() => {
     if (userid) {
       dispatch(getTransactionsByGrouped(userid));

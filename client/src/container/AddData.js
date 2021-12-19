@@ -76,8 +76,12 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(1),
     display: "flex",
-    justifyContent: "space-between",
-    backgroundColor: theme.palette.type === "light" ? "#fdecec" : "#3a3232",
+    textAlign: "center",
+    flexDirection: "column",
+    justifyContent: "center",
+    backgroundColor: theme.palette.type === "light" ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.1)",
+    border: theme.palette.type === "light" ? "1px solid #fff" : "rgba(255,255,255,0.1)",
+    boxShadow: theme.palette.type === "light" ? "0 2px 5px rgba(0,0,0,0.1)" : "0 2px 5px rgba(0,0,0,0.1)",
   },
 }));
 
@@ -297,7 +301,6 @@ export default function AddData(props) {
           return number;
         }
       });
-      console.log(amountArr);
       var sum = amountArr.reduce(function (a, b) {
         return Number(a) + Number(b);
       }, 0);
@@ -371,13 +374,19 @@ export default function AddData(props) {
       <main>
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={1}>
-            <Grid item xs={12} md={12} sm={12}>
+            <Grid item xs={6} md={6} sm={6}>
               <Paper className={classes.paper}>
-                <Typography variant="caption" className={classes.title}>
-                  <strong>Expenses:</strong> ₹{totalExpenses}
+                <Typography variant="caption">Expenses:</Typography>
+                <Typography variant="body2">
+                  <strong>₹{totalExpenses}</strong>
                 </Typography>
-                <Typography variant="caption" className={classes.title}>
-                  <strong>Budget:</strong> ₹{budgetAmount}
+              </Paper>
+            </Grid>
+            <Grid item xs={6} md={6} sm={6}>
+              <Paper className={classes.paper}>
+                <Typography variant="caption">Budget:</Typography>
+                <Typography variant="body2">
+                  <strong>₹{budgetAmount}</strong>
                 </Typography>
               </Paper>
             </Grid>

@@ -165,9 +165,13 @@ function App() {
             <Route
               exact
               path="/transactions"
-              userid={userid}
-              component={TransactionView}
-              isLoggedin={user.isLoggedin}
+              render={(props) => (
+                <TransactionView
+                  {...props}
+                  userid={userid}
+                  isLoggedin={user.isLoggedin}
+                />
+              )}
             />
 
             <Route
