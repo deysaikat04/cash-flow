@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 
-console.log(process.env.MONGO_DB_CONNECTION_URL);
-
 const db =
   process.env.NODE_ENV === "development"
     ? process.env.MONGO_DB_LOCAL
