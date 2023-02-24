@@ -98,7 +98,9 @@ router.post("/login", async (req, res) => {
     } else {
       return res
         .status(400)
-        .json({ message: "Yor are not registerd! Please signup to continue." });
+        .json({
+          message: "Yor are not registered! Please signup to continue.",
+        });
     }
   } catch (err) {
     res.status(404).json({ message: "Invalid token" });

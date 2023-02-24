@@ -1,8 +1,10 @@
 import axios from "axios";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 export function getBudget(token, month) {
   return (dispatch) => {
-    let url = `/api/transactions/getBudget/${month}`;
+    let url = `${API_BASE_URL}/api/transactions/getBudget/${month}`;
     axios
       .get(url, {
         headers: {
@@ -26,7 +28,7 @@ export function getBudget(token, month) {
 
 export function addBudget(token, data) {
   return (dispatch) => {
-    let url = `/api/transactions/setBudget`;
+    let url = `${API_BASE_URL}/api/transactions/setBudget`;
     axios
       .post(url, data, {
         headers: {
