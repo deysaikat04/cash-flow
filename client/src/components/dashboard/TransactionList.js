@@ -103,9 +103,8 @@ export default function TransactionList(props) {
   const [updatedAmount, setUpdatedAmount] = useState(amount.toString());
   const [updatedCategory, setUpdatedCategory] = useState(category);
   const [updatedDescription, setUpdatedDescription] = useState(description);
-  const [updatedTransactionMode, setUpdatedTransactionMode] = useState(
-    transactionMode
-  );
+  const [updatedTransactionMode, setUpdatedTransactionMode] =
+    useState(transactionMode);
   const [error, setError] = useState({ amount: false, category: false });
 
   const handleDialogOpen = () => {
@@ -178,7 +177,7 @@ export default function TransactionList(props) {
   };
 
   const updatetransaction = () => {
-    if (!updatedAmount === "" && !updatedCategory === "") {
+    if (updatedAmount !== "" && updatedCategory !== "") {
       let token = userid;
       const data = {
         year: Number(createdAt.slice(-4)),
@@ -276,13 +275,6 @@ export default function TransactionList(props) {
         <DialogContent>
           <Container maxWidth="lg" className={classes.container}>
             <Grid container spacing={1}>
-              <Grid item xs={12} md={12} lg={12}>
-                <Typography variant="body1">
-                  {/* {createdAt}  */}
-                  {id}
-                </Typography>
-              </Grid>
-
               <Grid item xs={12} md={12} lg={12}>
                 <DialogContentText id="alert-dialog-description">
                   {transactionType}
