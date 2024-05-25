@@ -37,6 +37,10 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { addTransactions } from "../actions/expenseAction";
+import {
+  EXPENSE_CATEGORY_LIST,
+  INCOME_CATEGORY_LIST,
+} from "../utils/constants/index";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -79,23 +83,20 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     flexDirection: "column",
     justifyContent: "center",
-    backgroundColor: theme.palette.type === "light" ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.1)",
-    border: theme.palette.type === "light" ? "1px solid #fff" : "rgba(255,255,255,0.1)",
-    boxShadow: theme.palette.type === "light" ? "0 2px 5px rgba(0,0,0,0.1)" : "0 2px 5px rgba(0,0,0,0.1)",
+    backgroundColor:
+      theme.palette.type === "light"
+        ? "rgba(255,255,255,0.5)"
+        : "rgba(255,255,255,0.1)",
+    border:
+      theme.palette.type === "light"
+        ? "1px solid #fff"
+        : "rgba(255,255,255,0.1)",
+    boxShadow:
+      theme.palette.type === "light"
+        ? "0 2px 5px rgba(0,0,0,0.1)"
+        : "0 2px 5px rgba(0,0,0,0.1)",
   },
 }));
-
-const expenseCategoryArray = [
-  "Others",
-  "Groceries",
-  "Shopping",
-  "Medical",
-  "Bill",
-  "Food",
-  "Travel",
-];
-
-const incomeCategoryArray = ["Others", "Salary"];
 
 const GreenCheckbox = withStyles({
   root: {
@@ -598,14 +599,14 @@ export default function AddData(props) {
                     })}
                   >
                     {transactionType === "Expense"
-                      ? expenseCategoryArray.map((name) => {
+                      ? EXPENSE_CATEGORY_LIST.map((name) => {
                           return (
                             <MenuItem value={name} key={name}>
                               {name}
                             </MenuItem>
                           );
                         })
-                      : incomeCategoryArray.map((name) => {
+                      : INCOME_CATEGORY_LIST.map((name) => {
                           return (
                             <MenuItem value={name} key={name}>
                               {name}

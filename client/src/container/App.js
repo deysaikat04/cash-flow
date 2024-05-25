@@ -46,6 +46,9 @@ export const dark = {
       main: "#c5882c",
     },
   },
+  typography: {
+    color: "#ffffff",
+  },
 };
 
 function App() {

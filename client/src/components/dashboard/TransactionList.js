@@ -30,18 +30,10 @@ import {
 } from "../../actions/expenseAction";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-
-const expenseCategoryArray = [
-  "Others",
-  "Groceries",
-  "Shopping",
-  "Medical",
-  "Bill",
-  "Food",
-  "Travel",
-];
-
-const incomeCategoryArray = ["Others", "Salary"];
+import {
+  EXPENSE_CATEGORY_LIST,
+  INCOME_CATEGORY_LIST,
+} from "../../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   itemExpense: {
@@ -79,6 +71,31 @@ const useStyles = makeStyles((theme) => ({
     right: theme.spacing(1),
     top: theme.spacing(1),
     color: theme.palette.grey[500],
+  },
+  amountBlock: {
+    padding: "4px",
+  },
+  amount: {
+    fontSize: "0.85rem",
+    fontWeight: "500",
+  },
+  description: {
+    width: "500px",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    "@media (max-width: 780px)": {
+      width: "250px",
+    },
+    "@media (max-width: 600px)": {
+      width: "200px",
+    },
+    "@media (max-width: 450px)": {
+      width: "140px",
+    },
+    "@media (max-width: 300px)": {
+      width: "80px",
+    },
   },
 }));
 
@@ -176,7 +193,7 @@ export default function TransactionList(props) {
     }
   };
 
-  const updatetransaction = () => {
+  const handleUpdateTransaction = () => {
     if (updatedAmount !== "" && updatedCategory !== "") {
       let token = userid;
       const data = {
@@ -245,7 +262,14 @@ export default function TransactionList(props) {
             <img src="./img/upi-icon.svg" className={classes.image} alt="upi" />
           )}
         </ListItemAvatar>
-        <ListItemText primary={"₹" + amount} secondary={description} />
+        <div className={classes.amountBlock}>
+          <Typography component="p" variant="p" className={classes.amount}>
+            {"₹" + amount}
+          </Typography>
+          <Typography component="p" variant="p" className={classes.description}>
+            {description}
+          </Typography>
+        </div>
         <ListItemSecondaryAction>
           <Typography variant="caption" style={{ display: "block" }}>
             {category}
@@ -383,14 +407,14 @@ export default function TransactionList(props) {
                     })}
                   >
                     {transactionType === "Expense"
-                      ? expenseCategoryArray.map((name) => {
+                      ? EXPENSE_CATEGORY_LIST.map((name) => {
                           return (
                             <MenuItem value={name} key={name}>
                               {name}
                             </MenuItem>
                           );
                         })
-                      : incomeCategoryArray.map((name) => {
+                      : INCOME_CATEGORY_LIST.map((name) => {
                           return (
                             <MenuItem value={name} key={name}>
                               {name}
@@ -407,7 +431,7 @@ export default function TransactionList(props) {
           <Button onClick={deleteItem} autoFocus>
             Delete
           </Button>
-          <Button color="secondary" autoFocus onClick={updatetransaction}>
+          <Button color="secondary" autoFocus onClick={handleUpdateTransaction}>
             Update
           </Button>
         </DialogActions>
