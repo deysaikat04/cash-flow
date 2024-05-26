@@ -8,8 +8,8 @@ export const EXPENSE_CATEGORY_LIST = [
   "Stocks",
   "Mutual Funds",
   "Movie",
-  "Debt",
+  "EMI",
   "Others",
 ];
 
-export const INCOME_CATEGORY_LIST = ["Stocks", "Salary", "Others"];
+export const INCOME_CATEGORY_LIST = ["Stocks", "Salary", "Rent", "Others"];
